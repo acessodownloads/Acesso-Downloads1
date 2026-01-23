@@ -630,4 +630,168 @@
                     'autoplay': 1,
                     'controls': 1,
                     'disablekb': 0,
-                    'modestbrandin
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'fs': 1,
+                    'iv_load_policy': 3,
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+        
+        function onPlayerReady(event) {
+            videoDuration = event.target.getDuration();
+            videoDurationEl.textContent = formatTime(videoDuration);
+            
+            // Iniciar atualização de progresso
+            progressInterval = setInterval(updateProgress, 500);
+            
+            // Atualizar estatísticas periodicamente
+            setInterval(updateStats, 10000);
+        }
+        
+        function onPlayerStateChange(event) {
+            // Se o vídeo terminou
+            if(event.data === YT.PlayerState.ENDED) {
+                clearInterval(progressInterval);
+                unlockLink();
+            }
+            
+            // Se pausado, verificar se tentou pular
+            if(event.data === YT.PlayerState.PAUSED) {
+                const currentTime = player.getCurrentTime();
+                // Se o usuário voltou muito no vídeo, avisar
+                if(currentTime < timeWatched - 10) {
+                    alert('Não é permitido voltar no vídeo! O progresso será ajustado.');
+                    player.seekTo(timeWatched);
+                }
+            }
+        }
+        
+        function onPlayerError(event) {
+            console.error('Erro no player:', event.data);
+            alert('Ocorreu um erro ao carregar o vídeo. Por favor, recarregue a página.');
+        }
+        
+        function updateProgress() {
+            if(!player || !player.getCurrentTime) return;
+            
+            const currentTime = player.getCurrentTime();
+            timeWatched = currentTime;
+            
+            // Atualizar exibição de tempo
+            timeWatchedEl.textContent = formatTime(currentTime);
+            
+            // Calcular e atualizar progresso
+            const progress = (currentTime / videoDuration) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+            
+            // Se chegou a 100% (ou perto por arredondamento)
+            if(progress >= 99.5 && !isCompleted) {
+                unlockLink();
+            }
+        }
+        
+        function unlockLink() {
+            if(isCompleted) return;
+            
+            isCompleted = true;
+            clearInterval(progressInterval);
+            
+            // Atualizar UI
+            linkContainer.classList.add('unlocked');
+            linkContainer.innerHTML = `
+                <h3><i class="fas fa-unlock"></i> Link desbloqueado!</h3>
+                <p>O vídeo foi assistido completamente. Clique no botão abaixo para acessar o link.</p>
+            `;
+            linkLiberado.style.display = 'inline-block';
+            
+            // Efeitos visuais
+            createConfetti(200);
+            showNotification();
+            
+            // Atualizar estatísticas
+            updateStats();
+            
+            // Reproduzir som de sucesso (simulado)
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            playSuccessSound(audioContext);
+        }
+        
+        function playSuccessSound(audioContext) {
+            // Criar um som de sucesso simples
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // Nota C5
+            oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // Nota E5
+            oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // Nota G5
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+        
+        // Prevenir atalhos de teclado para pular vídeo
+        document.addEventListener('keydown', (e) => {
+            // Bloquear teclas de navegação de vídeo (espaço, setas, etc)
+            const videoKeys = [' ', 'Spacebar', 'ArrowLeft', 'ArrowRight', 'k', 'K'];
+            if(videoKeys.includes(e.key) && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+            }
+            
+            // Bloquear F12 (DevTools) e Ctrl+Shift+I/Ctrl+Shift+J/Ctrl+U
+            if(e.key === 'F12' || 
+               (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'i' || e.key === 'j')) ||
+               (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                alert('Esta função está desativada nesta página.');
+            }
+        });
+        
+        // Prevenir clique direito
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            alert('Menu de contexto desativado.');
+        });
+        
+        // Prevenir arrastar elementos
+        document.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            initFloatingElements();
+            updateStats();
+            
+            // Simular estatísticas em tempo real
+            setInterval(() => {
+                updateStats();
+            }, 15000);
+        });
+        
+        // Verificar se a página está em primeiro plano
+        document.addEventListener('visibilitychange', () => {
+            if(document.hidden) {
+                // Página não está visível - alertar usuário
+                if(!isCompleted) {
+                    alert('A página não está em foco! O vídeo pode parar de contar.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
