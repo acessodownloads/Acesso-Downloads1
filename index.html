@@ -3,7 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assista e Libere - Dockaze</title>
+    <title>Assista e Libere - Dockaze | Sistema Interativo de Conteúdos Exclusivos</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Assista vídeos e complete tarefas para liberar conteúdos exclusivos no Dockaze. Sistema gamificado com pontos, conquistas e recompensas. Canal oficial: @dockaze">
+    <meta name="keywords" content="dockaze, vídeos, conteúdo exclusivo, gamificação, pontos, conquistas, YouTube, assista e libere, tarefas interativas">
+    <meta name="author" content="Dockaze">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seu-site.com/">
+    <meta property="og:title" content="Assista e Libere - Dockaze | Sistema Interativo de Conteúdos">
+    <meta property="og:description" content="Sistema interativo para liberação de conteúdos exclusivos através de tarefas gamificadas. Visite nosso canal: youtube.com/@dockaze">
+    <meta property="og:image" content="https://seu-site.com/images/dockaze-og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://seu-site.com/">
+    <meta property="twitter:title" content="Assista e Libere - Dockaze | Sistema Interativo de Conteúdos">
+    <meta property="twitter:description" content="Sistema interativo para liberação de conteúdos exclusivos através de tarefas gamificadas. Visite nosso canal: youtube.com/@dockaze">
+    <meta property="twitter:image" content="https://seu-site.com/images/dockaze-twitter-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://seu-site.com/">
+    
+    <!-- Preload de recursos críticos -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preconnect" href="https://www.youtube.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com/ajax/libs">
+    <link rel="dns-prefetch" href="https://www.youtube.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/732/732208.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn-icons-png.flaticon.com/512/732/732208.png">
+    
+    <!-- Schema Markup para SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Assista e Libere - Dockaze",
+        "description": "Sistema interativo de liberação de conteúdos exclusivos através de tarefas gamificadas",
+        "url": "https://seu-site.com",
+        "applicationCategory": "EntertainmentApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "Dockaze",
+            "url": "https://youtube.com/@dockaze",
+            "sameAs": [
+                "https://youtube.com/@dockaze"
+            ]
+        },
+        "interactionStatistic": {
+            "@type": "InteractionCounter",
+            "interactionType": "https://schema.org/WatchAction",
+            "userInteractionCount": 8542
+        }
+    }
+    </script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -14,6 +81,25 @@
             --dark: #2d3436;
             --light: #f5f5f5;
             --gradient: linear-gradient(135deg, #ff3b3b, #ff0000, #ff7675);
+        }
+
+        /* Variáveis para modo claro */
+        :root[data-theme="light"] {
+            --dark: #f8f9fa;
+            --light: #2d3436;
+            --gradient: linear-gradient(135deg, #ff6b6b, #ff3838, #ff7675);
+        }
+
+        :root[data-theme="light"] .card {
+            background: rgba(45, 52, 54, 0.05);
+            border: 1px solid rgba(45, 52, 54, 0.1);
+        }
+
+        :root[data-theme="light"] .background-animation {
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 184, 148, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(9, 132, 227, 0.1) 0%, transparent 50%);
         }
 
         * {
@@ -30,6 +116,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .background-animation {
@@ -43,12 +130,13 @@
                 radial-gradient(circle at 20% 80%, rgba(255, 59, 59, 0.15) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(0, 184, 148, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 40% 40%, rgba(9, 132, 227, 0.1) 0%, transparent 50%);
+            transition: all 0.3s ease;
         }
 
         .header {
-            background: rgba(45, 52, 54, 0.9);
+            background: rgba(45, 52, 54, 0.95);
             backdrop-filter: blur(10px);
-            padding: 20px;
+            padding: 15px 20px;
             text-align: center;
             border-bottom: 2px solid var(--primary);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
@@ -56,12 +144,23 @@
             z-index: 100;
         }
 
+        :root[data-theme="light"] .header {
+            background: rgba(248, 249, 250, 0.95);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 15px;
-            margin-bottom: 10px;
         }
 
         .logo-icon {
@@ -71,23 +170,75 @@
         }
 
         .logo h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
             background: var(--gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .channel-access {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .youtube-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #ff0000;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .youtube-btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .youtube-btn i {
+            font-size: 1.2rem;
         }
 
         .channel-promo {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #dfe6e9;
-            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        :root[data-theme="light"] .channel-promo {
+            color: #636e72;
+            border-top: 1px solid rgba(45, 52, 54, 0.1);
         }
 
         .channel-promo b {
             color: var(--secondary);
             text-shadow: 0 0 10px rgba(0, 184, 148, 0.5);
+        }
+
+        .channel-link {
+            color: #ff3b3b;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .channel-link:hover {
+            color: #ff7675;
+            text-decoration: underline;
         }
 
         .main-container {
@@ -104,7 +255,12 @@
             padding: 30px;
             margin-bottom: 30px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        :root[data-theme="light"] .card {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .card:hover {
@@ -130,6 +286,74 @@
             line-height: 1.6;
         }
 
+        :root[data-theme="light"] .instruction p {
+            color: #636e72;
+        }
+
+        .steps-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        :root[data-theme="light"] .step {
+            background: rgba(45, 52, 54, 0.05);
+            border: 1px solid rgba(45, 52, 54, 0.1);
+        }
+
+        .step.completed {
+            border-color: var(--secondary);
+            background: rgba(0, 184, 148, 0.1);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            line-height: 40px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .step.completed .step-number {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .step h3 {
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .step p {
+            color: #b2bec3;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        :root[data-theme="light"] .step p {
+            color: #636e72;
+        }
+
         .video-container {
             position: relative;
             width: 100%;
@@ -139,6 +363,12 @@
             margin-bottom: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
             border: 3px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        :root[data-theme="light"] .video-container {
+            border: 3px solid rgba(45, 52, 54, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         #player {
@@ -152,6 +382,7 @@
 
         .progress-section {
             margin-bottom: 25px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
         }
 
         .progress-info {
@@ -168,6 +399,10 @@
             border-radius: 10px;
             overflow: hidden;
             position: relative;
+        }
+
+        :root[data-theme="light"] .progress-container {
+            background: rgba(45, 52, 54, 0.1);
         }
 
         .progress-bar {
@@ -201,6 +436,83 @@
             animation: moveStripes 1s linear infinite;
         }
 
+        .progress-waves {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.1) 50%, 
+                transparent 100%);
+            animation: waveMove 2s linear infinite;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .progress-container:hover .progress-waves {
+            opacity: 1;
+        }
+
+        .task-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .task-button {
+            padding: 15px 30px;
+            background: rgba(9, 132, 227, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid rgba(9, 132, 227, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.7s;
+        }
+
+        .task-button:hover::before {
+            left: 100%;
+        }
+
+        .task-button:hover {
+            background: rgba(9, 132, 227, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(9, 132, 227, 0.3);
+        }
+
+        .task-button.completed {
+            background: rgba(0, 184, 148, 0.2);
+            border-color: var(--secondary);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .task-button.completed:hover {
+            background: rgba(0, 184, 148, 0.4);
+        }
+
         .link-container {
             text-align: center;
             margin-top: 30px;
@@ -209,12 +521,89 @@
             border-radius: 15px;
             border: 1px solid rgba(0, 184, 148, 0.3);
             transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out 1s both;
         }
 
         .link-container.unlocked {
-            background: rgba(0, 184, 148, 0.2);
+            background: linear-gradient(
+                90deg,
+                rgba(0, 184, 148, 0.1) 0%,
+                rgba(0, 184, 148, 0.3) 50%,
+                rgba(0, 184, 148, 0.1) 100%
+            );
+            background-size: 200% auto;
+            animation: shimmer 2s infinite linear, fadeInUp 0.8s ease-out;
             border-color: var(--secondary);
             box-shadow: 0 0 20px rgba(0, 184, 148, 0.3);
+        }
+
+        .link-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        :root[data-theme="light"] .link-preview {
+            background: rgba(45, 52, 54, 0.05);
+        }
+
+        .link-container.unlocked .link-preview {
+            display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .preview-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--secondary);
+        }
+
+        .preview-header h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .preview-header p {
+            color: #b2bec3;
+            font-size: 0.9rem;
+        }
+
+        :root[data-theme="light"] .preview-header p {
+            color: #636e72;
+        }
+
+        .preview-info {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #b2bec3;
+        }
+
+        .preview-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+
+        :root[data-theme="light"] .preview-info span {
+            background: rgba(45, 52, 54, 0.05);
         }
 
         #linkLiberado {
@@ -260,6 +649,65 @@
             margin-top: 20px;
             color: #dfe6e9;
             font-weight: 600;
+            animation: fadeInUp 0.8s ease-out 1.2s both;
+        }
+
+        :root[data-theme="light"] .timer-display {
+            color: #2d3436;
+        }
+
+        .reset-timer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #b2bec3;
+            margin-top: 10px;
+            animation: fadeInUp 0.8s ease-out 1.4s both;
+        }
+
+        .visual-timer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .timer-circle {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .timer-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 4;
+        }
+
+        :root[data-theme="light"] .timer-bg {
+            stroke: rgba(45, 52, 54, 0.1);
+        }
+
+        .timer-progress {
+            fill: none;
+            stroke: var(--secondary);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            stroke-dasharray: 157;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--light);
         }
 
         .warning {
@@ -269,6 +717,11 @@
             margin-top: 25px;
             text-align: center;
             border: 1px solid rgba(231, 76, 60, 0.3);
+            animation: fadeInUp 0.8s ease-out 1.6s both;
+        }
+
+        :root[data-theme="light"] .warning {
+            background: rgba(231, 76, 60, 0.05);
         }
 
         .warning i {
@@ -282,6 +735,7 @@
             margin-top: 30px;
             flex-wrap: wrap;
             gap: 20px;
+            animation: fadeInUp 0.8s ease-out 1.8s both;
         }
 
         .stat-box {
@@ -291,6 +745,15 @@
             text-align: center;
             min-width: 150px;
             flex: 1;
+            transition: transform 0.3s ease;
+        }
+
+        :root[data-theme="light"] .stat-box {
+            background: rgba(45, 52, 54, 0.05);
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
         }
 
         .stat-box i {
@@ -309,6 +772,173 @@
             color: #b2bec3;
             font-size: 0.9rem;
             margin-top: 5px;
+        }
+
+        :root[data-theme="light"] .stat-box .label {
+            color: #636e72;
+        }
+
+        /* Container de Conquistas */
+        .achievements-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            animation: fadeInUp 0.8s ease-out 2s both;
+        }
+
+        :root[data-theme="light"] .achievements-container {
+            background: rgba(45, 52, 54, 0.05);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .achievement {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        :root[data-theme="light"] .achievement {
+            background: rgba(45, 52, 54, 0.05);
+        }
+
+        .achievement.unlocked {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            opacity: 1;
+            transform: scale(1.05);
+            animation: pulseGlow 2s infinite;
+        }
+
+        .achievement i {
+            font-size: 2rem;
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+
+        /* Sistema de Compartilhamento */
+        .share-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            animation: fadeInUp 0.8s ease-out 2.2s both;
+        }
+
+        :root[data-theme="light"] .share-container {
+            background: rgba(45, 52, 54, 0.05);
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .share-btn.whatsapp { background: #25D366; }
+        .share-btn.facebook { background: #1877F2; }
+        .share-btn.twitter { background: #1DA1F2; }
+        .share-btn.copy-link { background: var(--accent); }
+
+        .share-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Controles de interface */
+        .interface-controls {
+            position: fixed;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(45, 52, 54, 0.8);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            background: rgba(45, 52, 54, 1);
+        }
+
+        #themeToggle { bottom: 130px; }
+        #soundToggle { bottom: 80px; }
+        #shareToggle { bottom: 30px; }
+
+        /* Botão flutuante do YouTube */
+        .floating-youtube {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .floating-youtube-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #ff0000;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+            animation: floatPulse 3s infinite;
+        }
+
+        .floating-youtube-btn:hover {
+            background: #cc0000;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.5);
+        }
+
+        .floating-youtube-btn i {
+            font-size: 1.3rem;
         }
 
         .confetti {
@@ -348,6 +978,11 @@
             transition: transform 0.5s ease;
             max-width: 350px;
             z-index: 1000;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        :root[data-theme="light"] .notification {
+            background: rgba(248, 249, 250, 0.95);
         }
 
         .notification.show {
@@ -366,12 +1001,55 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: #b2bec3;
             font-size: 0.9rem;
+            animation: fadeInUp 0.8s ease-out 2.4s both;
+        }
+
+        :root[data-theme="light"] .footer {
+            border-top: 1px solid rgba(45, 52, 54, 0.1);
+            color: #636e72;
+        }
+
+        .footer-links {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ff3b3b;
+            text-decoration: underline;
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px rgba(0, 184, 148, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 184, 148, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(0, 184, 148, 0.5); }
         }
 
         @keyframes buttonPulse {
@@ -385,6 +1063,16 @@
             100% { background-position: 30px 30px; }
         }
 
+        @keyframes waveMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
         @keyframes float {
             0% { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(-100vh) rotate(360deg); }
@@ -395,10 +1083,31 @@
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
+        @keyframes floatPulse {
+            0% { box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4); }
+            50% { box-shadow: 0 5px 25px rgba(255, 0, 0, 0.6); }
+            100% { box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4); }
+        }
+
         /* Responsividade */
         @media (max-width: 768px) {
             .logo h1 {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
+            }
+            
+            .header-top {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .channel-access {
+                justify-content: center;
+            }
+            
+            .youtube-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
             }
             
             .main-container {
@@ -418,39 +1127,155 @@
                 font-size: 1.1rem;
             }
             
-            .stats {
+            .stats, .steps-container, .achievements-grid {
                 flex-direction: column;
+            }
+            
+            .task-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .task-button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .interface-controls {
+                bottom: 20px;
+                flex-direction: row;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .control-btn {
+                position: static;
+                margin: 0 5px;
+            }
+            
+            .floating-youtube {
+                bottom: 80px;
+                right: 50%;
+                transform: translateX(50%);
+            }
+            
+            .floating-youtube-btn {
+                font-size: 0.8rem;
+                padding: 10px 18px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .logo-icon {
+                font-size: 2rem;
+            }
+            
+            .youtube-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+            
+            .floating-youtube-btn {
+                padding: 8px 15px;
+                font-size: 0.75rem;
+            }
+            
+            .floating-youtube-btn i {
+                font-size: 1rem;
             }
         }
     </style>
 </head>
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
     <div class="background-animation"></div>
     
     <!-- Floating elements -->
     <div class="floating-elements" id="floatingElements"></div>
     
+    <!-- Controles de interface -->
+    <div class="interface-controls">
+        <button class="control-btn" id="themeToggle" aria-label="Alternar tema">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="control-btn" id="soundToggle" aria-label="Alternar som">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        <button class="control-btn" id="shareToggle" aria-label="Compartilhar">
+            <i class="fas fa-share-alt"></i>
+        </button>
+    </div>
+    
+    <!-- Botão flutuante do YouTube -->
+    <div class="floating-youtube">
+        <a href="https://youtube.com/@dockaze?si=M1Li5Z82Ku09uJ7D" target="_blank" class="floating-youtube-btn" aria-label="Visitar canal Dockaze no YouTube">
+            <i class="fab fa-youtube"></i>
+            <span>@dockaze</span>
+        </a>
+    </div>
+    
     <!-- Header -->
-    <header class="header">
-        <div class="logo">
-            <i class="fas fa-play-circle logo-icon"></i>
-            <h1>Assista e Libere</h1>
+    <header class="header" role="banner">
+        <div class="header-top">
+            <div class="logo">
+                <i class="fas fa-play-circle logo-icon" aria-hidden="true"></i>
+                <h1 id="typedTitle">Assista e Libere</h1>
+            </div>
+            
+            <div class="channel-access">
+                <a href="https://youtube.com/@dockaze?si=M1Li5Z82Ku09uJ7D" target="_blank" class="youtube-btn" aria-label="Acessar canal Dockaze no YouTube">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    Acessar Canal
+                </a>
+            </div>
         </div>
-        <div class="channel-promo">
-            Não se esqueça de se inscrever no canal: <b>DOCKAZE</b>
+        
+        <div class="channel-promo" role="contentinfo">
+            Não se esqueça de se inscrever no canal: 
+            <b>
+                <a href="https://youtube.com/@dockaze?si=M1Li5Z82Ku09uJ7D" target="_blank" class="channel-link" aria-label="Inscrever-se no canal Dockaze">
+                    DOCKAZE
+                </a>
+            </b>
         </div>
     </header>
     
     <!-- Main Content -->
-    <div class="main-container">
+    <main class="main-container" role="main">
         <div class="card">
             <div class="instruction">
-                <h2>Como funciona?</h2>
-                <p>Assista o vídeo completo para liberar o link desejado. O progresso será monitorado e quando o vídeo terminar, o link será liberado automaticamente.</p>
+                <h2 id="typedInstruction">Como funciona?</h2>
+                <p id="typedDescription">Complete as duas tarefas abaixo para liberar o link desejado. Primeiro assista o vídeo completo e depois visite a página especificada. Quando ambas as tarefas estiverem completas, o link será liberado automaticamente.</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step" id="step1">
+                    <div class="step-number">1</div>
+                    <h3>Assista o Vídeo</h3>
+                    <p>Assista o vídeo completo até o final. O progresso será monitorado automaticamente.</p>
+                    <div class="progress-info">
+                        <span>Progresso:</span>
+                        <span id="videoProgress">0%</span>
+                    </div>
+                </div>
+                
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <h3>Visite a Página</h3>
+                    <p>Clique no botão abaixo para visitar a página necessária e depois volte aqui.</p>
+                    <div class="progress-info">
+                        <span>Status:</span>
+                        <span id="pageStatus">Não visitada</span>
+                    </div>
+                </div>
             </div>
             
             <div class="video-container">
-                <div id="player"></div>
+                <div id="player" aria-label="Player de vídeo do YouTube"></div>
             </div>
             
             <div class="progress-section">
@@ -460,56 +1285,140 @@
                 </div>
                 <div class="progress-container">
                     <div class="progress-bar" id="progressBar"></div>
+                    <div class="progress-waves"></div>
                 </div>
             </div>
             
-            <div class="timer-display">
-                <i class="fas fa-clock"></i> Tempo assistido: <span id="timeWatched">0:00</span> / <span id="videoDuration">0:00</span>
+            <div class="task-buttons">
+                <a href="https://kiwify.app/JbebCg8" target="_blank" class="task-button" id="visitPageButton" aria-label="Visitar página externa">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    Visite uma Página
+                </a>
             </div>
             
-            <div class="warning">
-                <i class="fas fa-exclamation-triangle"></i>
-                Não feche esta página e não pule o vídeo, ou o progresso será resetado.
+            <div class="timer-display">
+                <i class="fas fa-clock" aria-hidden="true"></i> Tempo assistido: <span id="timeWatched">0:00</span> / <span id="videoDuration">0:00</span>
+            </div>
+            
+            <div class="reset-timer">
+                <div class="visual-timer">
+                    <div class="timer-circle">
+                        <svg width="60" height="60" aria-hidden="true">
+                            <circle cx="30" cy="30" r="25" class="timer-bg"></circle>
+                            <circle cx="30" cy="30" r="25" class="timer-progress" id="timerCircle"></circle>
+                        </svg>
+                        <div class="timer-text" id="resetTimer">10:00</div>
+                    </div>
+                    <div class="timer-label">Tempo restante</div>
+                </div>
+            </div>
+            
+            <div class="warning" role="alert">
+                <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                Não feche esta página e não pule o vídeo. Complete ambas as tarefas dentro de 10 minutos.
             </div>
             
             <div class="link-container" id="linkContainer">
-                <h3><i class="fas fa-lock"></i> Link bloqueado</h3>
-                <p>Assista o vídeo completamente para desbloquear</p>
-                <a id="linkLiberado" href="https://biofeita.com/DOCKAZE" target="_blank">
-                    <i class="fas fa-external-link-alt"></i> Clique aqui para acessar o link!
+                <h3><i class="fas fa-lock" aria-hidden="true"></i> Link bloqueado</h3>
+                <p>Complete ambas as tarefas para desbloquear o link</p>
+                
+                <div class="link-preview" id="linkPreview">
+                    <div class="preview-header">
+                        <img src="https://cdn-icons-png.flaticon.com/512/732/732208.png" alt="Ícone Dockaze" loading="lazy">
+                        <div>
+                            <h4>Recurso Exclusivo Dockaze</h4>
+                            <p>Conteúdo premium liberado especialmente para você</p>
+                        </div>
+                    </div>
+                    <div class="preview-info">
+                        <span><i class="fas fa-shield-alt" aria-hidden="true"></i> Link seguro</span>
+                        <span><i class="fas fa-clock" aria-hidden="true"></i> Acesso imediato</span>
+                        <span><i class="fas fa-star" aria-hidden="true"></i> Exclusivo</span>
+                    </div>
+                </div>
+                
+                <a id="linkLiberado" href="https://biofeita.com/DOCKAZE" target="_blank" aria-label="Acessar conteúdo exclusivo">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i> Acessar Conteúdo Exclusivo
                 </a>
             </div>
         </div>
         
         <div class="stats">
             <div class="stat-box">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-users" aria-hidden="true"></i>
                 <div class="number" id="usersCount">1,247</div>
                 <div class="label">Usuários hoje</div>
             </div>
             <div class="stat-box">
-                <i class="fas fa-video"></i>
+                <i class="fas fa-video" aria-hidden="true"></i>
                 <div class="number" id="videosWatched">8,542</div>
                 <div class="label">Vídeos assistidos</div>
             </div>
             <div class="stat-box">
-                <i class="fas fa-link"></i>
+                <i class="fas fa-link" aria-hidden="true"></i>
                 <div class="number" id="linksUnlocked">6,329</div>
                 <div class="label">Links liberados</div>
             </div>
         </div>
-    </div>
+        
+        <div class="achievements-container">
+            <h3><i class="fas fa-trophy" aria-hidden="true"></i> Conquistas</h3>
+            <div class="achievements-grid">
+                <div class="achievement" id="achievementFirst" data-achievement="first">
+                    <i class="fas fa-play-circle" aria-hidden="true"></i>
+                    <span>Primeiro Vídeo</span>
+                </div>
+                <div class="achievement" id="achievementSpeed" data-achievement="speed">
+                    <i class="fas fa-bolt" aria-hidden="true"></i>
+                    <span>Completou em 5min</span>
+                </div>
+                <div class="achievement" id="achievementVisitor" data-achievement="visitor">
+                    <i class="fas fa-globe" aria-hidden="true"></i>
+                    <span>Visitante Frequente</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="share-container" id="shareContainer">
+            <p>Gostou? Compartilhe com amigos!</p>
+            <div class="share-buttons">
+                <button class="share-btn whatsapp" id="shareWhatsapp" aria-label="Compartilhar no WhatsApp">
+                    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                </button>
+                <button class="share-btn facebook" id="shareFacebook" aria-label="Compartilhar no Facebook">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </button>
+                <button class="share-btn twitter" id="shareTwitter" aria-label="Compartilhar no Twitter">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </button>
+                <button class="share-btn copy-link" id="shareCopy" aria-label="Copiar link">
+                    <i class="fas fa-link" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </main>
     
     <!-- Notification -->
-    <div class="notification" id="notification">
-        <h3><i class="fas fa-check-circle"></i> Parabéns!</h3>
-        <p>Você completou o vídeo e o link foi liberado. Clique no botão para acessar!</p>
+    <div class="notification" id="notification" role="status" aria-live="polite">
+        <h3><i class="fas fa-check-circle" aria-hidden="true"></i> Parabéns!</h3>
+        <p>Você completou todas as tarefas e o link foi liberado. Clique no botão para acessar!</p>
     </div>
     
     <!-- Footer -->
-    <footer class="footer">
-        <p>© 2023 Dockaze - Todos os direitos reservados | Este site requer que você assista ao vídeo antes de acessar o link</p>
-        <p>Não armazenamos nenhum dado pessoal</p>
+    <footer class="footer" role="contentinfo">
+        <p>© 2023 <a href="https://youtube.com/@dockaze?si=M1Li5Z82Ku09uJ7D" target="_blank">Dockaze</a> - Todos os direitos reservados | Complete ambas as tarefas para acessar o link</p>
+        <p>Não armazenamos nenhum dado pessoal | Progresso reseta após 10 minutos</p>
+        <div class="footer-links">
+            <a href="https://youtube.com/@dockaze?si=M1Li5Z82Ku09uJ7D" target="_blank" aria-label="Canal no YouTube">
+                <i class="fab fa-youtube"></i> YouTube
+            </a>
+            <a href="https://biofeita.com/DOCKAZE" target="_blank" aria-label="Bio do Dockaze">
+                <i class="fas fa-link"></i> Bio
+            </a>
+            <a href="mailto:contato@dockaze.com" aria-label="Contato por email">
+                <i class="fas fa-envelope"></i> Contato
+            </a>
+        </div>
     </footer>
 
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -517,13 +1426,29 @@
         // Configurações iniciais
         let player;
         let progressInterval;
+        let resetInterval;
         let timeWatched = 0;
         let videoDuration = 0;
-        let isCompleted = false;
+        let resetTime = 10 * 60; // 10 minutos em segundos
+        let confettiInterval;
+        let startTime;
+        let achievements = {
+            first: false,
+            speed: false,
+            visitor: false
+        };
+        
+        // Estado das tarefas
+        let tasks = {
+            videoWatched: false,
+            pageVisited: false,
+            unlocked: false
+        };
         
         // Elementos DOM
         const progressBar = document.getElementById('progressBar');
         const progressPercent = document.getElementById('progressPercent');
+        const videoProgress = document.getElementById('videoProgress');
         const timeWatchedEl = document.getElementById('timeWatched');
         const videoDurationEl = document.getElementById('videoDuration');
         const linkLiberado = document.getElementById('linkLiberado');
@@ -532,6 +1457,33 @@
         const usersCountEl = document.getElementById('usersCount');
         const videosWatchedEl = document.getElementById('videosWatched');
         const linksUnlockedEl = document.getElementById('linksUnlocked');
+        const visitPageButton = document.getElementById('visitPageButton');
+        const pageStatus = document.getElementById('pageStatus');
+        const resetTimerEl = document.getElementById('resetTimer');
+        const timerCircle = document.getElementById('timerCircle');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const themeToggle = document.getElementById('themeToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        const shareToggle = document.getElementById('shareToggle');
+        const shareContainer = document.getElementById('shareContainer');
+        const shareWhatsapp = document.getElementById('shareWhatsapp');
+        const shareFacebook = document.getElementById('shareFacebook');
+        const shareTwitter = document.getElementById('shareTwitter');
+        const shareCopy = document.getElementById('shareCopy');
+        const achievementFirst = document.getElementById('achievementFirst');
+        const achievementSpeed = document.getElementById('achievementSpeed');
+        const achievementVisitor = document.getElementById('achievementVisitor');
+        const typedTitle = document.getElementById('typedTitle');
+        const typedInstruction = document.getElementById('typedInstruction');
+        const typedDescription = document.getElementById('typedDescription');
+        
+        // Efeitos sonoros (base64 encoded para evitar CORS)
+        const soundEffects = {
+            complete: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ'),
+            progress: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ'),
+            unlock: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ')
+        };
         
         // Inicializar elementos flutuantes
         function initFloatingElements() {
@@ -550,9 +1502,43 @@
             }
         }
         
+        // Efeito de digitação
+        function typeWriter(element, text, speed = 50, callback = null) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            type();
+        }
+        
+        // Configurar efeitos de digitação em cascata
+        function initTypeWriterEffects() {
+            const titleText = "Assista e Libere";
+            const instructionText = "Como funciona?";
+            const descriptionText = "Complete as duas tarefas abaixo para liberar o link desejado. Primeiro assista o vídeo completo e depois visite a página especificada. Quando ambas as tarefas estiverem completas, o link será liberado automaticamente.";
+            
+            typeWriter(typedTitle, titleText, 100, () => {
+                setTimeout(() => {
+                    typeWriter(typedInstruction, instructionText, 100, () => {
+                        setTimeout(() => {
+                            typeWriter(typedDescription, descriptionText, 30);
+                        }, 300);
+                    });
+                }, 500);
+            });
+        }
+        
         // Atualizar estatísticas (simulação)
         function updateStats() {
-            // Simular aumento nas estatísticas
             const users = parseInt(usersCountEl.textContent.replace(',', ''));
             const videos = parseInt(videosWatchedEl.textContent.replace(',', ''));
             const links = parseInt(linksUnlockedEl.textContent.replace(',', ''));
@@ -560,10 +1546,8 @@
             usersCountEl.textContent = (users + Math.floor(Math.random() * 3)).toLocaleString();
             videosWatchedEl.textContent = (videos + 1).toLocaleString();
             
-            // Quando o vídeo for completado, aumentar links desbloqueados
-            if(isCompleted) {
+            if(tasks.unlocked) {
                 linksUnlockedEl.textContent = (links + 1).toLocaleString();
-                isCompleted = false;
             }
         }
         
@@ -574,53 +1558,217 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
         
-        // Criar confetes
-        function createConfetti(count = 150) {
+        // Criar confetes (reduzido para menos confetes)
+        function createConfetti(count = 50) {
             for(let i = 0; i < count; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 
-                // Cor aleatória
                 const hue = Math.floor(Math.random() * 360);
                 confetti.style.backgroundColor = `hsl(${hue}, 100%, 60%)`;
                 
-                // Tamanho aleatório
                 const size = Math.random() * 15 + 5;
                 confetti.style.width = `${size}px`;
                 confetti.style.height = `${size}px`;
                 
-                // Forma aleatória (círculo ou quadrado)
                 if(Math.random() > 0.5) {
                     confetti.style.borderRadius = '50%';
                 }
                 
-                // Posição inicial
                 confetti.style.left = `${Math.random() * 100}%`;
                 confetti.style.top = '-10px';
                 
-                // Animação
                 const animationDuration = 3 + Math.random() * 2;
                 confetti.style.animation = `confettiFall ${animationDuration}s linear forwards`;
                 
-                // Adicionar ao body
                 document.body.appendChild(confetti);
                 
-                // Remover após a animação
                 setTimeout(() => {
                     confetti.remove();
                 }, animationDuration * 1000);
             }
         }
         
+        // Criar confetes uma vez com intervalo maior
+        function createConfettiOnce() {
+            if (confettiInterval) {
+                clearInterval(confettiInterval);
+            }
+            
+            createConfetti(50);
+            
+            confettiInterval = setTimeout(() => {
+                createConfetti(30);
+            }, 3000);
+        }
+        
+        // Feedback haptic
+        function hapticFeedback(type) {
+            if ('vibrate' in navigator) {
+                switch(type) {
+                    case 'success':
+                        navigator.vibrate([100, 50, 100]);
+                        break;
+                    case 'warning':
+                        navigator.vibrate([200]);
+                        break;
+                    case 'error':
+                        navigator.vibrate([50, 50, 50]);
+                        break;
+                }
+            }
+        }
+        
+        // Tocar som
+        function playSound(effect) {
+            if (localStorage.getItem('soundEnabled') !== 'false') {
+                try {
+                    soundEffects[effect].currentTime = 0;
+                    soundEffects[effect].play().catch(e => console.log("Som bloqueado pelo navegador"));
+                } catch(e) {
+                    console.log("Erro ao reproduzir som:", e);
+                }
+            }
+        }
+        
         // Mostrar notificação
-        function showNotification() {
+        function showNotification(message = null) {
+            if (message) {
+                notification.querySelector('p').textContent = message;
+            }
             notification.classList.add('show');
             setTimeout(() => {
                 notification.classList.remove('show');
             }, 5000);
         }
         
-       // YouTube Player API
+        // Atualizar timer de reset visual
+        function updateResetTimer() {
+            if (resetTime <= 0) {
+                resetTasks();
+                resetTime = 10 * 60;
+            } else {
+                resetTime--;
+            }
+            
+            const minutes = Math.floor(resetTime / 60);
+            const seconds = resetTime % 60;
+            resetTimerEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            // Atualizar círculo do timer
+            const progress = ((10 * 60 - resetTime) / (10 * 60)) * 157;
+            timerCircle.style.strokeDashoffset = 157 - progress;
+        }
+        
+        // Resetar tarefas
+        function resetTasks() {
+            tasks = {
+                videoWatched: false,
+                pageVisited: false,
+                unlocked: false
+            };
+            
+            // Resetar UI
+            step1.classList.remove('completed');
+            step2.classList.remove('completed');
+            visitPageButton.classList.remove('completed');
+            linkContainer.classList.remove('unlocked');
+            linkLiberado.style.display = 'none';
+            pageStatus.textContent = 'Não visitada';
+            pageStatus.style.color = '';
+            videoProgress.textContent = '0%';
+            
+            if (progressBar) progressBar.style.width = '0%';
+            if (progressPercent) progressPercent.textContent = '0%';
+            
+            // Resetar player se existir
+            if (player && player.seekTo) {
+                player.seekTo(0);
+                player.pauseVideo();
+            }
+            
+            // Mostrar aviso
+            hapticFeedback('warning');
+            const warning = document.querySelector('.warning');
+            const originalText = warning.innerHTML;
+            warning.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Progresso resetado! Complete as tarefas novamente.';
+            warning.style.backgroundColor = 'rgba(241, 196, 15, 0.1)';
+            warning.style.borderColor = 'rgba(241, 196, 15, 0.3)';
+            
+            setTimeout(() => {
+                warning.innerHTML = originalText;
+                warning.style.backgroundColor = '';
+                warning.style.borderColor = '';
+            }, 5000);
+        }
+        
+        // Verificar conquistas
+        function checkAchievements() {
+            // Primeiro vídeo
+            if (tasks.videoWatched && !achievements.first) {
+                achievements.first = true;
+                achievementFirst.classList.add('unlocked');
+                showNotification('Conquista desbloqueada: Primeiro Vídeo!');
+                playSound('complete');
+            }
+            
+            // Completou em menos de 5 minutos
+            if (tasks.unlocked && startTime && !achievements.speed) {
+                const completionTime = (Date.now() - startTime) / 1000;
+                if (completionTime < 300) { // 5 minutos
+                    achievements.speed = true;
+                    achievementSpeed.classList.add('unlocked');
+                    showNotification('Conquista desbloqueada: Velocista!');
+                    playSound('complete');
+                }
+            }
+            
+            // Visitante frequente (3+ visitas à página)
+            if (tasks.pageVisited && !achievements.visitor) {
+                let visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+                visitCount++;
+                localStorage.setItem('visitCount', visitCount.toString());
+                
+                if (visitCount >= 3) {
+                    achievements.visitor = true;
+                    achievementVisitor.classList.add('unlocked');
+                    showNotification('Conquista desbloqueada: Visitante Frequente!');
+                    playSound('complete');
+                }
+            }
+        }
+        
+        // Verificar se página foi visitada
+        function checkPageVisited() {
+            const pageVisitedTime = localStorage.getItem('pageVisitedTime');
+            if (pageVisitedTime) {
+                const timeSinceVisit = (Date.now() - parseInt(pageVisitedTime)) / 1000;
+                if (timeSinceVisit < 120) {
+                    completePageTask();
+                }
+            }
+        }
+        
+        // Completar tarefa da página
+        function completePageTask() {
+            tasks.pageVisited = true;
+            step2.classList.add('completed');
+            visitPageButton.classList.add('completed');
+            pageStatus.textContent = 'Visitada ✓';
+            pageStatus.style.color = '#00b894';
+            playSound('progress');
+            checkAllTasks();
+            checkAchievements();
+        }
+        
+        // Verificar todas as tarefas
+        function checkAllTasks() {
+            if (tasks.videoWatched && tasks.pageVisited && !tasks.unlocked) {
+                unlockLink();
+            }
+        }
+        
+        // YouTube Player API
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
                 height: '100%',
@@ -645,27 +1793,30 @@
         function onPlayerReady(event) {
             videoDuration = player.getDuration();
             videoDurationEl.textContent = formatTime(videoDuration);
+            startTime = Date.now();
             
-            // Iniciar monitoramento de progresso
+            // Iniciar monitoramentos
             progressInterval = setInterval(updateProgress, 1000);
-            
-            // Atualizar estatísticas periodicamente
+            resetInterval = setInterval(updateResetTimer, 1000);
             setInterval(updateStats, 5000);
+            
+            // Verificar se página foi visitada
+            checkPageVisited();
+            
+            // Verificar se já completou antes
+            checkPreviousCompletion();
         }
         
         // Monitorar estado do player
         function onPlayerStateChange(event) {
-            // Se o vídeo terminou (estado = 0)
             if (event.data === YT.PlayerState.ENDED) {
-                unlockLink();
+                completeVideoTask();
             }
             
-            // Se pausou (estado = 2), parar o timer de progresso
             if (event.data === YT.PlayerState.PAUSED) {
                 clearInterval(progressInterval);
             }
             
-            // Se está tocando (estado = 1), reiniciar o timer
             if (event.data === YT.PlayerState.PLAYING) {
                 progressInterval = setInterval(updateProgress, 1000);
             }
@@ -680,21 +1831,32 @@
             const progress = (currentTime / videoDuration) * 100;
             
             // Atualizar elementos visuais
-            progressBar.style.width = `${progress}%`;
-            progressPercent.textContent = `${Math.round(progress)}%`;
+            if (progressBar) progressBar.style.width = `${progress}%`;
+            if (progressPercent) progressPercent.textContent = `${Math.round(progress)}%`;
+            videoProgress.textContent = `${Math.round(progress)}%`;
             timeWatchedEl.textContent = formatTime(currentTime);
             
-            // Verificar se o vídeo está quase terminando (95% ou mais)
-            if (progress >= 95 && !isCompleted) {
-                unlockLink();
+            // Verificar se o vídeo está quase terminando
+            if (progress >= 95 && !tasks.videoWatched) {
+                completeVideoTask();
             }
+        }
+        
+        // Completar tarefa do vídeo
+        function completeVideoTask() {
+            tasks.videoWatched = true;
+            step1.classList.add('completed');
+            videoProgress.textContent = '100% ✓';
+            playSound('progress');
+            checkAllTasks();
+            checkAchievements();
         }
         
         // Liberar o link
         function unlockLink() {
-            if (isCompleted) return;
+            if (tasks.unlocked) return;
             
-            isCompleted = true;
+            tasks.unlocked = true;
             clearInterval(progressInterval);
             
             // Atualizar interface
@@ -702,37 +1864,198 @@
             linkLiberado.style.display = 'inline-block';
             
             // Animações
-            createConfetti();
+            createConfettiOnce();
             showNotification();
             updateStats();
+            hapticFeedback('success');
+            playSound('unlock');
+            checkAchievements();
             
-            // Salvar no localStorage que o usuário já completou
-            localStorage.setItem('videoCompleted', 'true');
+            // Salvar no localStorage
+            localStorage.setItem('tasksCompleted', 'true');
+            localStorage.setItem('completionTime', Date.now().toString());
         }
         
         // Verificar se já completou antes
         function checkPreviousCompletion() {
-            if (localStorage.getItem('videoCompleted') === 'true') {
-                unlockLink();
+            const tasksCompleted = localStorage.getItem('tasksCompleted');
+            const completionTime = localStorage.getItem('completionTime');
+            
+            if (tasksCompleted === 'true' && completionTime) {
+                const timeSinceCompletion = (Date.now() - parseInt(completionTime)) / 1000;
+                if (timeSinceCompletion < 600) {
+                    resetTime = 600 - Math.floor(timeSinceCompletion);
+                    unlockLink();
+                    completeVideoTask();
+                    completePageTask();
+                } else {
+                    localStorage.removeItem('tasksCompleted');
+                    localStorage.removeItem('completionTime');
+                    localStorage.removeItem('pageVisitedTime');
+                }
             }
         }
+        
+        // Configurar tema
+        function initTheme() {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+                themeToggle.innerHTML = savedTheme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            } else {
+                document.body.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+                themeToggle.innerHTML = prefersDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+            }
+        }
+        
+        // Configurar controles de interface
+        function initInterfaceControls() {
+            // Tema
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggle.innerHTML = newTheme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                hapticFeedback('success');
+            });
+            
+            // Som
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            soundToggle.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+            
+            soundToggle.addEventListener('click', () => {
+                const enabled = localStorage.getItem('soundEnabled') !== 'false';
+                localStorage.setItem('soundEnabled', !enabled);
+                soundToggle.innerHTML = !enabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+                hapticFeedback('success');
+                if (!enabled) playSound('progress');
+            });
+            
+            // Compartilhamento
+            shareToggle.addEventListener('click', () => {
+                shareContainer.style.display = shareContainer.style.display === 'none' ? 'block' : 'none';
+                hapticFeedback('success');
+            });
+            
+            // Botões de compartilhamento
+            shareWhatsapp.addEventListener('click', () => {
+                const text = `Acabei de liberar um conteúdo exclusivo no Dockaze! ${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                hapticFeedback('success');
+            });
+            
+            shareFacebook.addEventListener('click', () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
+                hapticFeedback('success');
+            });
+            
+            shareTwitter.addEventListener('click', () => {
+                const text = "Acabei de liberar um conteúdo exclusivo no Dockaze!";
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
+                hapticFeedback('success');
+            });
+            
+            shareCopy.addEventListener('click', () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showNotification('Link copiado para a área de transferência!');
+                    hapticFeedback('success');
+                });
+            });
+        }
+        
+        // Configurar botão de visitar página
+        visitPageButton.addEventListener('click', function(e) {
+            // Salvar tempo da visita
+            localStorage.setItem('pageVisitedTime', Date.now().toString());
+            
+            // Abrir em nova aba
+            window.open(this.href, '_blank');
+            
+            // Marcar como visitada após 2 segundos
+            setTimeout(() => {
+                completePageTask();
+            }, 2000);
+            
+            e.preventDefault();
+        });
+        
+        // Detectar quando o usuário volta para a página
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                checkPageVisited();
+            }
+        });
         
         // Inicializar
         window.addEventListener('DOMContentLoaded', () => {
             initFloatingElements();
-            checkPreviousCompletion();
+            initTypeWriterEffects();
+            initTheme();
+            initInterfaceControls();
+            
+            // Adicionar ondas no progresso
+            addProgressWaves();
+            
+            // Verificar conquistas salvas
+            const savedAchievements = localStorage.getItem('achievements');
+            if (savedAchievements) {
+                achievements = JSON.parse(savedAchievements);
+                if (achievements.first) achievementFirst.classList.add('unlocked');
+                if (achievements.speed) achievementSpeed.classList.add('unlocked');
+                if (achievements.visitor) achievementVisitor.classList.add('unlocked');
+            }
             
             // Verificar se a API do YouTube carregou
             if (typeof YT !== 'undefined' && YT.loaded) {
                 onYouTubeIframeAPIReady();
+            } else {
+                setTimeout(() => {
+                    if (typeof YT === 'undefined') {
+                        console.warn('YouTube API não carregou, usando modo de teste');
+                        videoDuration = 120;
+                        videoDurationEl.textContent = '2:00';
+                        startTime = Date.now();
+                        resetInterval = setInterval(updateResetTimer, 1000);
+                        setInterval(updateStats, 5000);
+                        checkPageVisited();
+                        checkPreviousCompletion();
+                    }
+                }, 3000);
             }
         });
 
+        // Função auxiliar para adicionar ondas no progresso
+        function addProgressWaves() {
+            const progressContainer = document.querySelector('.progress-container');
+            if (progressContainer && !progressContainer.querySelector('.progress-waves')) {
+                const waves = document.createElement('div');
+                waves.className = 'progress-waves';
+                progressContainer.appendChild(waves);
+            }
+        }
+
         // Função para testes (remova em produção)
         function forceUnlock() {
-            unlockLink();
-            alert('Link liberado para teste!');
+            completeVideoTask();
+            completePageTask();
+            showNotification('Tarefas completadas para teste!');
+            hapticFeedback('success');
         }
+        
+        // Salvar conquistas quando desbloqueadas
+        function saveAchievements() {
+            localStorage.setItem('achievements', JSON.stringify(achievements));
+        }
+        
+        // Sobrescrever função de desbloquear conquistas para salvar
+        const originalCheckAchievements = checkAchievements;
+        checkAchievements = function() {
+            originalCheckAchievements();
+            saveAchievements();
+        };
     </script>
 </body>
 </html>
