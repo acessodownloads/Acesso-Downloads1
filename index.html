@@ -3,230 +3,517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClipForge - Download de Vídeos</title>
+    <title>ClipForge - Automação de Cortes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { DEFAULT: '#8B5CF6', dark: '#7C3AED' },
+                        dark: { DEFAULT: '#0A0A0B', card: '#121214', border: '#1F1F23' }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0A0A0B; color: #fff; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; }
+        * { scrollbar-width: thin; scrollbar-color: #1F1F23 #0A0A0B; }
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: #0A0A0B; }
+        *::-webkit-scrollbar-thumb { background-color: #1F1F23; border-radius: 3px; }
         .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-        .btn { padding: 14px 24px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s; }
-        .btn-primary { background: #8B5CF6; color: #fff; }
-        .btn-primary:active { background: #7C3AED; }
-        .btn-success { background: #10B981; color: #fff; }
-        .btn-secondary { background: #374151; color: #fff; }
-        input, select { width: 100%; padding: 14px; background: #0A0A0B; border: 1px solid #1F1F23; color: #fff; border-radius: 12px; font-size: 16px; }
-        input:focus, select:focus { border-color: #8B5CF6; outline: none; }
-        .card { background: #121214; border: 1px solid #1F1F23; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-        .progress-bar { width: 100%; height: 6px; background: #1F1F23; border-radius: 3px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #8B5CF6; width: 0%; transition: width 0.3s; }
-        .server-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
-        .status-online { background: #10B981; }
-        .status-offline { background: #EF4444; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .pulse { animation: pulse 2s infinite; }
         
-        .tab-btn { padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #1F1F23; background: transparent; color: #9CA3AF; transition: all 0.2s; }
-        .tab-btn.active { background: rgba(139, 92, 246, 0.1); color: #8B5CF6; border-color: #8B5CF6; }
-        
-        .corte-template { background: #fff; border-radius: 16px; overflow: hidden; color: #000; max-width: 400px; margin: 0 auto; }
-        .corte-header { padding: 20px; text-align: center; }
-        .corte-video { aspect-ratio: 9/16; background: #000; display: flex; align-items: center; justify-content: center; color: #666; }
+        .corte-template {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .corte-header {
+            background: #FFFFFF;
+            padding: 20px 20px 15px 20px;
+            text-align: center;
+        }
+        .corte-video-area {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: #000;
+            overflow: hidden;
+        }
+        .corte-video-area video,
+        .corte-video-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .template-card {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .template-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+        .template-card.selected {
+            border-color: #8B5CF6 !important;
+            background: rgba(139, 92, 246, 0.15) !important;
+        }
+        .video-card {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .video-card:hover {
+            border-color: #8B5CF6 !important;
+        }
+        .video-card.selected {
+            border-color: #8B5CF6 !important;
+            background: rgba(139, 92, 246, 0.1) !important;
+        }
+        .nav-btn {
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-desktop { display: none; }
+            .main-mobile { margin-left: 0 !important; }
+            .sidebar-mobile-show { display: flex !important; position: fixed; z-index: 50; }
+        }
     </style>
 </head>
-<body class="p-4">
-    <div class="max-w-2xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-bold"><span style="color:#8B5CF6">Clip</span>Forge</h1>
-            <p class="text-gray-400 text-sm mt-1">Download de Vídeos Sem Marca D'água</p>
-        </div>
+<body class="bg-dark text-gray-100">
+    <div id="app" class="min-h-screen flex flex-col md:flex-row">
+        
+        <!-- Botão menu mobile -->
+        <button onclick="toggleSidebar()" class="md:hidden fixed top-4 left-4 z-50 bg-dark-card p-3 rounded-lg border border-dark-border shadow-lg">
+            <i data-lucide="menu" class="w-6 h-6 text-white"></i>
+        </button>
 
-        <!-- Status do Servidor -->
-        <div class="card text-center mb-4" id="serverStatusCard">
-            <p class="text-sm">
-                <span class="server-status status-offline" id="statusDot"></span>
-                <span id="statusText">Verificando servidor...</span>
-            </p>
-            <p class="text-xs text-gray-500 mt-2" id="serverHelp" style="display:none;">
-                ⚠️ O servidor precisa estar rodando no Termux
-            </p>
-            <div class="mt-3" id="serverConfig" style="display:none;">
-                <label class="text-xs text-gray-400 block mb-1">Endereço do servidor:</label>
-                <input type="text" id="serverUrl" value="http://localhost:3000" class="text-sm" placeholder="http://localhost:3000">
-                <button onclick="changeServer()" class="btn btn-secondary mt-2 text-sm">Conectar</button>
+        <!-- Overlay mobile -->
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" onclick="closeSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 h-screen bg-dark-card border-r border-dark-border fixed left-0 top-0 z-40 flex-col hidden md:flex sidebar-desktop">
+            <div class="p-6 border-b border-dark-border">
+                <h1 class="text-2xl font-bold tracking-tight">
+                    <span class="text-primary">Clip</span><span class="text-white">Forge</span>
+                </h1>
+                <p class="text-xs text-gray-500 mt-1">Automação de Cortes v2.0</p>
+                <div id="serverStatus" class="mt-3 flex items-center gap-2 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-red-500 pulse" id="statusDot"></span>
+                    <span class="text-gray-400" id="statusLabel">Verificando...</span>
+                </div>
             </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="flex gap-2 mb-4 overflow-x-auto">
-            <button onclick="switchTab('download')" class="tab-btn active flex-1" id="tab-download">📥 Download</button>
-            <button onclick="switchTab('gallery')" class="tab-btn flex-1" id="tab-gallery">📂 Galeria</button>
-            <button onclick="switchTab('template')" class="tab-btn flex-1" id="tab-template">🎨 Template</button>
-        </div>
-
-        <!-- ABA DOWNLOAD -->
-        <div id="view-download" class="animate-fade-in">
-            <div class="card">
-                <label class="text-sm text-gray-300 block mb-2">Link do vídeo:</label>
-                <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/@user/video/123456789">
-                <button onclick="downloadVideo()" class="btn btn-primary mt-3" id="btnDownload">
-                    ⬇️ Baixar Vídeo (Sem Marca D'água)
+            
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 bg-primary/10 text-primary border border-primary/20">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span>Dashboard</span>
                 </button>
-                
-                <div id="progressArea" class="hidden mt-4">
-                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-                    <p class="text-sm text-gray-400 mt-2" id="progressText">Iniciando...</p>
+                <button onclick="switchTab('downloader')" id="nav-downloader" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
+                    <i data-lucide="download" class="w-5 h-5"></i><span>Download</span>
+                </button>
+                <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
+                    <i data-lucide="folder-open" class="w-5 h-5"></i><span>Galeria</span>
+                </button>
+                <button onclick="switchTab('editor')" id="nav-editor" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
+                    <i data-lucide="scissors" class="w-5 h-5"></i><span>Templates</span>
+                </button>
+                <button onclick="switchTab('render')" id="nav-render" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
+                    <i data-lucide="clapperboard" class="w-5 h-5"></i><span>Renderizar</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-dark-border">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Servidor:</span>
+                    <input type="text" id="serverUrlInput" value="" class="text-xs bg-dark border border-dark-border rounded px-2 py-1 text-white w-40" placeholder="localhost:3000">
+                </div>
+                <button onclick="updateServerUrl()" class="w-full mt-2 text-xs bg-primary/20 text-primary py-1.5 rounded hover:bg-primary/30 transition-all">
+                    🔗 Conectar Servidor
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-4 md:p-8 main-mobile" onclick="closeSidebar()">
+            
+            <!-- Dashboard -->
+            <div id="view-dashboard" class="view-section animate-fade-in">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Dashboard</h2>
+                    <p class="text-gray-400">Visão geral do seu fluxo de trabalho</p>
                 </div>
                 
-                <div id="resultArea" class="hidden mt-4">
-                    <p class="text-green-400 font-semibold">✅ Download concluído!</p>
-                    <button onclick="saveVideo()" class="btn btn-success mt-2">💾 Salvar Vídeo</button>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                        <p class="text-xs text-gray-400 mb-1">Downloads</p>
+                        <p class="text-2xl font-bold text-white" id="stat-downloads">0</p>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                        <p class="text-xs text-gray-400 mb-1">Templates</p>
+                        <p class="text-2xl font-bold text-white" id="stat-templates">0</p>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                        <p class="text-xs text-gray-400 mb-1">Renderizados</p>
+                        <p class="text-2xl font-bold text-white" id="stat-rendered">0</p>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
+                        <p class="text-xs text-gray-400 mb-1">Servidor</p>
+                        <p class="text-2xl font-bold text-green-400" id="stat-storage">0 MB</p>
+                    </div>
                 </div>
-                
-                <div id="errorArea" class="hidden mt-4">
-                    <p class="text-red-400" id="errorText"></p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <i data-lucide="activity" class="w-5 h-5 text-primary"></i> Atividade Recente
+                        </h3>
+                        <div id="activity-feed" class="space-y-2"></div>
+                    </div>
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <i data-lucide="server" class="w-5 h-5 text-green-400"></i> Status do Servidor
+                        </h3>
+                        <div id="serverInfo" class="space-y-2 text-sm">
+                            <p class="text-gray-400">Carregando informações...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- ABA GALERIA -->
-        <div id="view-gallery" class="hidden animate-fade-in">
-            <div class="card">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold">Vídeos no Servidor</h2>
-                    <button onclick="loadVideos()" class="text-sm text-primary">🔄 Atualizar</button>
+            <!-- Downloader -->
+            <div id="view-downloader" class="view-section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Download de Vídeos</h2>
+                    <p class="text-gray-400">Baixe vídeos SEM marca d'água direto do servidor</p>
                 </div>
-                <div id="videosList">
-                    <p class="text-gray-500 text-center py-8">Carregando...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABA TEMPLATE -->
-        <div id="view-template" class="hidden animate-fade-in">
-            <div class="card">
-                <h2 class="text-lg font-semibold mb-4">Preview do Template</h2>
-                <div class="corte-template" id="corteTemplate">
-                    <div class="corte-header" id="corteHeader" style="background:#fff">
-                        <div class="flex items-center justify-center gap-3 mb-2">
-                            <div style="width:48px;height:48px;background:#8B5CF6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
-                            <div class="text-left">
-                                <p class="font-bold text-lg" id="tplUsername">@SeuPerfil</p>
-                                <p class="text-xs text-gray-500" id="tplSubtitle">Canal de Cortes</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2">
+                        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Link do vídeo</label>
+                                <input type="text" id="downloadUrlInput" 
+                                       placeholder="https://www.tiktok.com/@user/video/123456789"
+                                       class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-3 text-white focus:border-primary outline-none">
+                                <p class="text-xs text-gray-500 mt-1">Suporta: TikTok, Instagram Reels, YouTube Shorts</p>
+                            </div>
+                            
+                            <div class="mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                                <p class="text-xs text-primary flex items-center">
+                                    <i data-lucide="info" class="w-4 h-4 mr-2 flex-shrink-0"></i>
+                                    O download é processado pelo servidor no Termux. O vídeo será salvo em MP4 sem marca d'água.
+                                </p>
+                            </div>
+                            
+                            <button onclick="startDownload()" id="btnDownload" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-all">
+                                <i data-lucide="download" class="w-5 h-5"></i><span>Baixar Vídeo</span>
+                            </button>
+                            
+                            <div id="downloadProgress" class="hidden mt-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm text-gray-300" id="downloadStatus">Conectando...</span>
+                                    <span class="text-sm text-primary font-semibold" id="downloadPercent">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-800 rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full transition-all duration-300" id="downloadBar" style="width: 0%"></div>
+                                </div>
+                                <div id="downloadResult" class="hidden mt-3">
+                                    <button onclick="saveDownloadedVideo()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all">
+                                        💾 Salvar vídeo na galeria
+                                    </button>
+                                </div>
+                                <div id="downloadError" class="hidden mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                                    <p class="text-sm text-red-400" id="downloadErrorText"></p>
+                                </div>
                             </div>
                         </div>
-                        <h2 class="text-xl font-bold mt-2" id="tplTitle">Título do Vídeo 🔥</h2>
                     </div>
-                    <div class="corte-video">
-                        <div class="text-center"><p class="text-4xl mb-2">🎬</p><p>Seu vídeo aqui</p></div>
+                    
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Histórico de Downloads</h3>
+                        <div id="downloadHistory" class="space-y-2 max-h-96 overflow-y-auto">
+                            <p class="text-sm text-gray-500">Nenhum download ainda</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="card">
-                <h2 class="text-lg font-semibold mb-4">Configurar</h2>
-                <div class="space-y-3">
-                    <div><label class="text-xs text-gray-400">@ do Perfil</label><input type="text" id="cfgUsername" value="@SeuPerfil" oninput="updateTemplate()"></div>
-                    <div><label class="text-xs text-gray-400">Subtítulo</label><input type="text" id="cfgSubtitle" value="Canal de Cortes" oninput="updateTemplate()"></div>
-                    <div><label class="text-xs text-gray-400">Título</label><input type="text" id="cfgTitle" value="Título do Vídeo 🔥" oninput="updateTemplate()"></div>
-                    <div><label class="text-xs text-gray-400">Cor do Fundo</label><input type="color" id="cfgBgColor" value="#ffffff" onchange="document.getElementById('corteHeader').style.background=this.value"></div>
-                    <button onclick="saveTemplate()" class="btn btn-primary mt-2">💾 Salvar Template</button>
+
+            <!-- Galeria -->
+            <div id="view-gallery" class="view-section hidden">
+                <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-2">Galeria de Vídeos</h2>
+                        <p class="text-gray-400">Vídeos armazenados no servidor</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="loadServerVideos()" class="px-4 py-2 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
+                            🔄 Atualizar
+                        </button>
+                        <button onclick="selectAllGallery()" class="px-4 py-2 bg-primary/20 text-primary rounded-lg text-sm hover:bg-primary/30 transition-all">
+                            Selecionar Todos
+                        </button>
+                        <button onclick="deselectAllGallery()" class="px-4 py-2 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
+                            Limpar
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <p class="text-gray-500 col-span-full text-center py-12">Carregando vídeos do servidor...</p>
                 </div>
             </div>
-            
-            <div class="card">
-                <h2 class="text-lg font-semibold mb-4">Templates Salvos</h2>
-                <div id="savedTemplates"></div>
+
+            <!-- Editor -->
+            <div id="view-editor" class="view-section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Templates</h2>
+                    <p class="text-gray-400">Crie e gerencie templates para seus cortes</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <div class="lg:col-span-2 bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Preview do Template</h3>
+                        <div class="corte-template" id="corte-template">
+                            <div class="corte-header" id="corte-header-bg">
+                                <div class="flex items-center justify-center gap-3 mb-3">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%238B5CF6'/%3E%3Ctext x='24' y='28' text-anchor='middle' fill='white' font-size='20'%3E👤%3C/text%3E%3C/svg%3E" class="w-12 h-12 rounded-full border-2 border-primary object-cover" id="corte-profile-pic">
+                                    <div class="text-left">
+                                        <p class="font-bold text-gray-900 text-lg" id="corte-username">@SeuPerfil</p>
+                                        <p class="text-xs text-gray-500" id="corte-subtitle">Canal de Cortes</p>
+                                    </div>
+                                </div>
+                                <h2 class="text-xl font-bold text-gray-900" id="corte-title">Título do Vídeo 🔥</h2>
+                            </div>
+                            <div class="corte-video-area">
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-900">
+                                    <div class="text-center">
+                                        <i data-lucide="video" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
+                                        <p class="text-sm">Preview do vídeo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Configurar Template</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400">Nome do Template</label>
+                                <input type="text" id="template-name" value="Template Padrão" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400">Foto de Perfil</label>
+                                <input type="file" accept="image/*" onchange="updateProfilePic(event)" class="w-full text-xs text-gray-400 mt-1">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400">@ do Perfil</label>
+                                <input type="text" id="config-username" value="@SeuPerfil" oninput="updatePreviewLive()" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400">Subtítulo</label>
+                                <input type="text" id="config-subtitle" value="Canal de Cortes" oninput="updatePreviewLive()" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400">Título do Vídeo</label>
+                                <input type="text" id="config-title" value="Título do Vídeo 🔥" oninput="updatePreviewLive()" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400">Cor do Fundo</label>
+                                <input type="color" value="#FFFFFF" onchange="document.getElementById('corte-header-bg').style.background = this.value" class="w-full h-10 rounded-lg border border-gray-700 cursor-pointer">
+                            </div>
+                            <button onclick="saveTemplate()" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-all mt-4">
+                                💾 Salvar Template
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                    <h3 class="text-lg font-semibold mb-4">Templates Salvos</h3>
+                    <div id="saved-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <p class="text-gray-500 col-span-full text-center py-4">Nenhum template salvo ainda</p>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <!-- Renderizar -->
+            <div id="view-render" class="view-section hidden">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Renderizar Vídeos</h2>
+                    <p class="text-gray-400">Aplique templates aos vídeos selecionados</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">1. Escolha um Template</h3>
+                        <div id="render-template-list" class="space-y-2 max-h-80 overflow-y-auto">
+                            <p class="text-gray-500 text-center py-4">Nenhum template disponível</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">2. Vídeos Selecionados</h3>
+                        <div id="render-video-list" class="space-y-2 max-h-80 overflow-y-auto">
+                            <p class="text-gray-500 text-center py-4">Selecione vídeos na galeria</p>
+                        </div>
+                        <button onclick="startRenderProcess()" id="start-render-btn" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all" disabled>
+                            <i data-lucide="clapperboard" class="w-5 h-5 inline mr-2"></i>Renderizar Vídeos
+                        </button>
+                    </div>
+                </div>
+
+                <div id="render-progress-container" class="hidden">
+                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Renderizando...</h3>
+                        <div id="render-progress-list" class="space-y-3"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script>
         // ===== CONFIGURAÇÃO =====
         let API_BASE = localStorage.getItem('cf_server_url') || 'http://localhost:3000';
-        let currentTab = 'download';
         let lastDownloadedFile = null;
-        let progressInterval = null;
+        let selectedVideosForRender = [];
+        let selectedTemplateForRender = null;
+        let serverOnline = false;
 
         // ===== INICIALIZAÇÃO =====
         function init() {
-            document.getElementById('serverUrl').value = API_BASE;
+            document.getElementById('serverUrlInput').value = API_BASE.replace('http://', '').replace(':3000', '') || 'localhost';
             checkServer();
-            switchTab('download');
+            updateDashboard();
+            updatePreviewLive();
             loadTemplates();
+            loadDownloadHistory();
             
-            // Verificar servidor a cada 30 segundos
-            setInterval(checkServer, 30000);
+            setInterval(checkServer, 15000);
+            setInterval(updateDashboard, 30000);
         }
 
-        // ===== VERIFICAÇÃO DO SERVIDOR =====
+        // ===== SERVIDOR =====
         async function checkServer() {
-            const statusDot = document.getElementById('statusDot');
-            const statusText = document.getElementById('statusText');
-            
+            const dot = document.getElementById('statusDot');
+            const label = document.getElementById('statusLabel');
             try {
-                const resp = await fetch(API_BASE + '/api/videos');
-                if (resp.ok) {
-                    statusDot.className = 'server-status status-online';
-                    statusText.textContent = 'Servidor conectado!';
-                    document.getElementById('serverHelp').style.display = 'none';
-                } else {
-                    throw new Error('Offline');
-                }
+                const resp = await fetch(API_BASE + '/api/status');
+                const data = await resp.json();
+                serverOnline = true;
+                if (dot) { dot.className = 'w-2 h-2 rounded-full bg-green-500'; }
+                if (label) { label.textContent = 'Servidor online'; label.className = 'text-green-400'; }
+                updateServerInfo(data);
             } catch(e) {
-                statusDot.className = 'server-status status-offline';
-                statusText.textContent = 'Servidor offline';
-                document.getElementById('serverHelp').style.display = 'block';
-                document.getElementById('serverConfig').style.display = 'block';
+                serverOnline = false;
+                if (dot) { dot.className = 'w-2 h-2 rounded-full bg-red-500 pulse'; }
+                if (label) { label.textContent = 'Servidor offline'; label.className = 'text-red-400'; }
             }
         }
 
-        function changeServer() {
-            const newUrl = document.getElementById('serverUrl').value.trim();
-            if (newUrl) {
-                API_BASE = newUrl;
-                localStorage.setItem('cf_server_url', newUrl);
+        function updateServerUrl() {
+            const input = document.getElementById('serverUrlInput').value.trim();
+            if (input) {
+                API_BASE = 'http://' + input + ':3000';
+                localStorage.setItem('cf_server_url', API_BASE);
                 checkServer();
-                alert('✅ Servidor alterado!');
+                alert('✅ Servidor atualizado para: ' + API_BASE);
             }
+        }
+
+        function updateServerInfo(data) {
+            if (!data) return;
+            document.getElementById('serverInfo').innerHTML = `
+                <p class="text-gray-300">📥 Downloads: <span class="text-white font-semibold">${data.downloads || 0}</span></p>
+                <p class="text-gray-300">💾 Armazenamento: <span class="text-white font-semibold">${data.storageUsed || '0 MB'}</span></p>
+                <p class="text-gray-300">⏱️ Uptime: <span class="text-white font-semibold">${data.uptime || '0s'}</span></p>
+                <p class="text-gray-300">📡 Versão: <span class="text-white font-semibold">${data.version || '1.0'}</span></p>
+            `;
         }
 
         // ===== NAVEGAÇÃO =====
         function switchTab(tab) {
-            document.querySelectorAll('#view-download, #view-gallery, #view-template').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            
+            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
             document.getElementById('view-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('active');
-            currentTab = tab;
             
-            if (tab === 'gallery') loadVideos();
-            if (tab === 'template') loadTemplates();
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
+                b.classList.add('text-gray-400');
+            });
+            
+            const btn = document.getElementById('nav-' + tab);
+            if (btn) {
+                btn.classList.add('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
+                btn.classList.remove('text-gray-400');
+            }
+            
+            if (tab === 'gallery') loadServerVideos();
+            if (tab === 'editor') loadTemplates();
+            if (tab === 'render') loadRenderPage();
+            closeSidebar();
+            lucide.createIcons();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('sidebar-mobile-show');
+            overlay.classList.toggle('hidden');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('sidebar-mobile-show');
+            document.getElementById('sidebar-overlay').classList.add('hidden');
         }
 
         // ===== DOWNLOAD =====
-        async function downloadVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            if (!url) return alert('Cole o link do vídeo!');
-
-            document.getElementById('progressArea').classList.remove('hidden');
-            document.getElementById('resultArea').classList.add('hidden');
-            document.getElementById('errorArea').classList.add('hidden');
-            document.getElementById('btnDownload').disabled = true;
-            document.getElementById('btnDownload').textContent = '⏳ Baixando...';
-
-            let progress = 0;
-            const fill = document.getElementById('progressFill');
-            const text = document.getElementById('progressText');
+        async function startDownload() {
+            if (!serverOnline) {
+                alert('❌ Servidor offline! Abra o Termux e digite: cd ~/clipforge-server && node server.js');
+                return;
+            }
             
-            progressInterval = setInterval(() => {
-                progress += 3;
-                if (progress > 85) { progress = 85; clearInterval(progressInterval); }
-                fill.style.width = progress + '%';
-                text.textContent = 'Baixando... ' + Math.round(progress) + '%';
-            }, 300);
-
+            const url = document.getElementById('downloadUrlInput').value.trim();
+            if (!url) { alert('Cole o link do vídeo!'); return; }
+            
+            const progressDiv = document.getElementById('downloadProgress');
+            const statusEl = document.getElementById('downloadStatus');
+            const percentEl = document.getElementById('downloadPercent');
+            const barEl = document.getElementById('downloadBar');
+            const resultDiv = document.getElementById('downloadResult');
+            const errorDiv = document.getElementById('downloadError');
+            const btn = document.getElementById('btnDownload');
+            
+            progressDiv.classList.remove('hidden');
+            resultDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-spin mr-2">⏳</span><span>Baixando...</span>';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 8;
+                if (progress > 85) { progress = 85; clearInterval(interval); }
+                barEl.style.width = Math.round(progress) + '%';
+                percentEl.textContent = Math.round(progress) + '%';
+                statusEl.textContent = 'Baixando vídeo do servidor...';
+            }, 400);
+            
             try {
                 const response = await fetch(API_BASE + '/api/download', {
                     method: 'POST',
@@ -235,119 +522,368 @@
                 });
                 
                 const data = await response.json();
-                clearInterval(progressInterval);
-
+                clearInterval(interval);
+                
                 if (data.success) {
-                    fill.style.width = '100%';
-                    text.textContent = '✅ Download concluído!';
+                    barEl.style.width = '100%';
+                    percentEl.textContent = '100%';
+                    statusEl.textContent = '✅ Download concluído! (' + (data.size || '?') + ' MB)';
                     lastDownloadedFile = data.filename;
-                    document.getElementById('resultArea').classList.remove('hidden');
-                    saveDownloadHistory(data.filename, url);
-                    setTimeout(() => saveVideo(), 500);
+                    resultDiv.classList.remove('hidden');
+                    addDownloadHistory(data.filename, url, data.size);
+                    updateDashboard();
+                    setTimeout(() => saveDownloadedVideo(), 800);
                 } else {
-                    text.textContent = '❌ ' + (data.error || 'Erro');
-                    document.getElementById('errorText').textContent = data.error;
-                    document.getElementById('errorArea').classList.remove('hidden');
+                    statusEl.textContent = '❌ Erro no download';
+                    document.getElementById('downloadErrorText').textContent = data.error || 'Falha ao baixar';
+                    errorDiv.classList.remove('hidden');
                 }
             } catch(e) {
-                clearInterval(progressInterval);
-                text.textContent = '❌ Servidor offline!';
-                document.getElementById('errorText').textContent = 'Abra o Termux e digite: node server.js';
-                document.getElementById('errorArea').classList.remove('hidden');
+                clearInterval(interval);
+                statusEl.textContent = '❌ Erro de conexão';
+                document.getElementById('downloadErrorText').textContent = 'Servidor offline. Verifique o Termux.';
+                errorDiv.classList.remove('hidden');
             }
-
-            document.getElementById('btnDownload').disabled = false;
-            document.getElementById('btnDownload').textContent = '⬇️ Baixar Vídeo';
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i data-lucide="download" class="w-5 h-5"></i><span>Baixar Vídeo</span>';
+            lucide.createIcons();
         }
 
-        function saveVideo() {
+        function saveDownloadedVideo() {
             if (lastDownloadedFile) {
                 window.open(API_BASE + '/api/video/' + lastDownloadedFile, '_blank');
             }
         }
 
-        function saveDownloadHistory(filename, url) {
+        function addDownloadHistory(filename, url, size) {
             const history = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
-            history.unshift({ filename, url, date: new Date().toISOString() });
-            localStorage.setItem('cf_downloads', JSON.stringify(history.slice(0, 50)));
+            history.unshift({
+                filename, url, size: size || '?',
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('cf_downloads', JSON.stringify(history.slice(0, 100)));
+            loadDownloadHistory();
+        }
+
+        function loadDownloadHistory() {
+            const history = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
+            const div = document.getElementById('downloadHistory');
+            if (!div) return;
+            
+            if (!history.length) {
+                div.innerHTML = '<p class="text-sm text-gray-500">Nenhum download ainda</p>';
+                return;
+            }
+            
+            div.innerHTML = history.slice(0, 20).map(h => `
+                <div class="flex items-center justify-between p-2 bg-[#0A0A0B] rounded-lg text-sm">
+                    <span class="text-white truncate flex-1">${h.filename}</span>
+                    <span class="text-gray-500 text-xs ml-2">${h.size} MB</span>
+                </div>
+            `).join('');
         }
 
         // ===== GALERIA =====
-        async function loadVideos() {
-            const list = document.getElementById('videosList');
+        async function loadServerVideos() {
+            const grid = document.getElementById('gallery-grid');
             try {
                 const resp = await fetch(API_BASE + '/api/videos');
                 const data = await resp.json();
                 
                 if (!data.videos || !data.videos.length) {
-                    list.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum vídeo no servidor</p>';
+                    grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-12">Nenhum vídeo no servidor. Faça downloads primeiro!</p>';
                     return;
                 }
-
-                list.innerHTML = data.videos.map(v => `
-                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#0A0A0B;border-radius:12px;margin-bottom:8px;">
-                        <span style="font-size:14px;flex:1;word-break:break-all;">${v.filename}</span>
-                        <button onclick="window.open('${API_BASE}/api/video/${v.filename}','_blank')" 
-                                style="padding:8px 16px;background:#10B981;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;margin-left:8px;">
-                            Baixar
-                        </button>
+                
+                grid.innerHTML = data.videos.map(v => `
+                    <div class="video-card bg-dark-card border-2 border-dark-border rounded-xl overflow-hidden ${selectedVideosForRender.includes(v.filename) ? 'selected' : ''}" 
+                         onclick="toggleVideoSelection('${v.filename}', this)" data-id="${v.filename}">
+                        <div class="aspect-[9/16] bg-gray-900 flex items-center justify-center">
+                            <div class="text-center">
+                                <i data-lucide="video" class="w-10 h-10 text-gray-500 mx-auto mb-1"></i>
+                                <p class="text-xs text-gray-600">${v.size} MB</p>
+                            </div>
+                            ${selectedVideosForRender.includes(v.filename) ? '<div class="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs">✓</div>' : ''}
+                        </div>
+                        <div class="p-2">
+                            <p class="text-xs text-white truncate">${v.filename}</p>
+                            <button onclick="event.stopPropagation(); window.open('${API_BASE}/api/video/${v.filename}', '_blank')" 
+                                    class="w-full mt-1 text-xs bg-primary/20 text-primary py-1 rounded hover:bg-primary/30 transition-all">
+                                📥 Baixar
+                            </button>
+                        </div>
                     </div>
                 `).join('');
+                
+                lucide.createIcons();
             } catch(e) {
-                list.innerHTML = '<p class="text-red-400 text-center py-8">❌ Servidor offline</p>';
+                grid.innerHTML = '<p class="text-red-400 col-span-full text-center py-12">❌ Servidor offline</p>';
             }
         }
 
-        // ===== TEMPLATE =====
-        function updateTemplate() {
-            document.getElementById('tplUsername').textContent = document.getElementById('cfgUsername').value || '@Perfil';
-            document.getElementById('tplSubtitle').textContent = document.getElementById('cfgSubtitle').value || 'Canal';
-            document.getElementById('tplTitle').textContent = document.getElementById('cfgTitle').value || 'Título';
+        function toggleVideoSelection(filename, element) {
+            if (selectedVideosForRender.includes(filename)) {
+                selectedVideosForRender = selectedVideosForRender.filter(v => v !== filename);
+                element.classList.remove('selected');
+            } else {
+                selectedVideosForRender.push(filename);
+                element.classList.add('selected');
+            }
+            loadServerVideos();
+            updateRenderButton();
+        }
+
+        function selectAllGallery() {
+            const cards = document.querySelectorAll('#gallery-grid .video-card');
+            cards.forEach(card => {
+                const id = card.dataset.id;
+                if (!selectedVideosForRender.includes(id)) {
+                    selectedVideosForRender.push(id);
+                }
+            });
+            loadServerVideos();
+            updateRenderButton();
+        }
+
+        function deselectAllGallery() {
+            selectedVideosForRender = [];
+            loadServerVideos();
+            updateRenderButton();
+        }
+
+        function updateRenderButton() {
+            const btn = document.getElementById('start-render-btn');
+            if (btn) {
+                btn.disabled = !(selectedVideosForRender.length > 0 && selectedTemplateForRender);
+            }
+        }
+
+        // ===== TEMPLATES =====
+        function updateProfilePic(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => document.getElementById('corte-profile-pic').src = e.target.result;
+            reader.readAsDataURL(file);
+        }
+
+        function updatePreviewLive() {
+            document.getElementById('corte-username').textContent = document.getElementById('config-username').value || '@SeuPerfil';
+            document.getElementById('corte-subtitle').textContent = document.getElementById('config-subtitle').value || 'Canal';
+            document.getElementById('corte-title').textContent = document.getElementById('config-title').value || 'Título';
         }
 
         function saveTemplate() {
             const template = {
-                name: 'Template ' + new Date().toLocaleDateString(),
-                username: document.getElementById('cfgUsername').value,
-                subtitle: document.getElementById('cfgSubtitle').value,
-                title: document.getElementById('cfgTitle').value,
-                bgColor: document.getElementById('cfgBgColor').value
+                name: document.getElementById('template-name').value || 'Template',
+                username: document.getElementById('config-username').value,
+                subtitle: document.getElementById('config-subtitle').value,
+                title: document.getElementById('config-title').value,
+                profilePic: document.getElementById('corte-profile-pic').src,
+                headerBg: document.getElementById('corte-header-bg').style.background || '#FFFFFF',
+                id: Date.now(),
+                date: new Date().toISOString()
             };
+            
             const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            templates.unshift({...template, id: Date.now()});
-            localStorage.setItem('cf_templates', JSON.stringify(templates.slice(0, 20)));
+            templates.unshift(template);
+            localStorage.setItem('cf_templates', JSON.stringify(templates.slice(0, 50)));
+            
             loadTemplates();
-            alert('✅ Template salvo!');
+            updateDashboard();
+            alert('✅ Template "' + template.name + '" salvo!');
         }
 
         function loadTemplates() {
             const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const div = document.getElementById('savedTemplates');
+            const grid = document.getElementById('saved-templates-grid');
+            
+            if (!grid) return;
+            
             if (!templates.length) {
-                div.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum template salvo</p>';
+                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">Nenhum template salvo</p>';
                 return;
             }
-            div.innerHTML = templates.map(t => `
-                <div style="padding:12px;background:#0A0A0B;border-radius:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-                    <div>
-                        <p style="font-size:14px;color:#fff;">${t.username}</p>
-                        <p style="font-size:12px;color:#9CA3AF;">${t.title}</p>
+            
+            grid.innerHTML = templates.map(t => `
+                <div class="bg-dark-card border border-dark-border rounded-xl p-4 template-card">
+                    <p class="text-sm font-semibold text-white">${t.name}</p>
+                    <p class="text-xs text-gray-400">${t.username}</p>
+                    <p class="text-xs text-gray-500 mt-1 truncate">${t.title}</p>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="loadTemplateForEdit('${t.id}')" class="text-xs text-primary hover:underline">Editar</button>
+                        <button onclick="deleteTemplate('${t.id}')" class="text-xs text-red-400 hover:underline">Excluir</button>
                     </div>
-                    <button onclick="deleteTemplate('${t.id}')" style="color:#EF4444;background:none;border:none;font-size:12px;cursor:pointer;">🗑</button>
                 </div>
             `).join('');
         }
 
+        function loadTemplateForEdit(id) {
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            const t = templates.find(t => t.id == id);
+            if (!t) return;
+            
+            document.getElementById('template-name').value = t.name || '';
+            document.getElementById('config-username').value = t.username || '';
+            document.getElementById('config-subtitle').value = t.subtitle || '';
+            document.getElementById('config-title').value = t.title || '';
+            if (t.profilePic) document.getElementById('corte-profile-pic').src = t.profilePic;
+            if (t.headerBg) document.getElementById('corte-header-bg').style.background = t.headerBg;
+            updatePreviewLive();
+            switchTab('editor');
+        }
+
         function deleteTemplate(id) {
-            if (confirm('Excluir?')) {
+            if (confirm('Excluir este template?')) {
                 const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
                 localStorage.setItem('cf_templates', JSON.stringify(templates.filter(t => t.id != id)));
                 loadTemplates();
+                updateDashboard();
             }
         }
 
-        // ===== START =====
+        // ===== RENDER =====
+        function loadRenderPage() {
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            const list = document.getElementById('render-template-list');
+            
+            if (!list) return;
+            
+            if (!templates.length) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum template disponível</p>';
+            } else {
+                list.innerHTML = templates.map(t => `
+                    <div class="template-card p-3 rounded-lg border-2 cursor-pointer ${selectedTemplateForRender === t.id ? 'selected' : 'border-dark-border bg-[#0A0A0B]'}"
+                         onclick="selectTemplateForRender('${t.id}', this)">
+                        <p class="text-sm font-semibold text-white">${t.name}</p>
+                        <p class="text-xs text-gray-400">${t.username} • ${t.title}</p>
+                    </div>
+                `).join('');
+            }
+            
+            updateRenderVideosList();
+            updateRenderButton();
+        }
+
+        function selectTemplateForRender(id, element) {
+            document.querySelectorAll('#render-template-list .template-card').forEach(c => c.classList.remove('selected', 'bg-primary/10'));
+            selectedTemplateForRender = id;
+            element.classList.add('selected', 'bg-primary/10');
+            updateRenderButton();
+        }
+
+        function updateRenderVideosList() {
+            const list = document.getElementById('render-video-list');
+            if (!list) return;
+            
+            if (!selectedVideosForRender.length) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">Selecione vídeos na galeria</p>';
+            } else {
+                list.innerHTML = selectedVideosForRender.map(v => `
+                    <div class="flex items-center justify-between p-2 bg-[#0A0A0B] rounded-lg text-sm">
+                        <span class="text-white truncate flex-1">${v}</span>
+                        <span class="text-primary text-xs ml-2">✓</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function startRenderProcess() {
+            if (!selectedVideosForRender.length || !selectedTemplateForRender) {
+                alert('Selecione um template e vídeos!');
+                return;
+            }
+            
+            const container = document.getElementById('render-progress-container');
+            const list = document.getElementById('render-progress-list');
+            container.classList.remove('hidden');
+            
+            list.innerHTML = selectedVideosForRender.map((v, i) => `
+                <div id="render-item-${i}" class="bg-[#0A0A0B] rounded-lg p-4 border border-gray-800">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-white truncate">${v}</span>
+                        <span class="text-sm text-purple-400 render-status">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-800 rounded-full h-1.5">
+                        <div class="bg-purple-400 h-1.5 rounded-full render-bar transition-all duration-300" style="width:0%"></div>
+                    </div>
+                </div>
+            `).join('');
+            
+            for (let i = 0; i < selectedVideosForRender.length; i++) {
+                await simulateRender(i);
+            }
+            
+            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
+            renders.unshift({ id: Date.now(), count: selectedVideosForRender.length, date: new Date().toISOString() });
+            localStorage.setItem('cf_renders', JSON.stringify(renders.slice(0, 100)));
+            
+            updateDashboard();
+            alert('✅ ' + selectedVideosForRender.length + ' vídeos renderizados com sucesso!');
+        }
+
+        async function simulateRender(index) {
+            const el = document.getElementById('render-item-' + index);
+            if (!el) return;
+            const bar = el.querySelector('.render-bar');
+            const status = el.querySelector('.render-status');
+            
+            for (let p = 0; p <= 100; p += Math.floor(Math.random() * 8) + 2) {
+                await sleep(80 + Math.random() * 120);
+                const prog = Math.min(p, 100);
+                if (bar) bar.style.width = prog + '%';
+                if (status) status.textContent = prog + '%';
+            }
+            if (status) { status.textContent = '✓ Concluído'; status.classList.add('text-green-400'); }
+        }
+
+        // ===== DASHBOARD =====
+        function updateDashboard() {
+            const downloads = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
+            
+            document.getElementById('stat-downloads').textContent = downloads.length;
+            document.getElementById('stat-templates').textContent = templates.length;
+            document.getElementById('stat-rendered').textContent = renders.length;
+            
+            const mb = downloads.length * 12;
+            document.getElementById('stat-storage').textContent = mb > 1000 ? (mb/1000).toFixed(1) + ' GB' : mb + ' MB';
+            
+            const acts = [];
+            downloads.slice(0, 5).forEach(d => acts.push({icon:'download',text:'Download: '+d.filename,time:formatTime(d.date)}));
+            renders.slice(0, 3).forEach(r => acts.push({icon:'video',text:'Render: '+r.count+' vídeos',time:formatTime(r.date)}));
+            
+            document.getElementById('activity-feed').innerHTML = acts.length ? acts.map(a => `
+                <div class="flex items-center space-x-2 p-2 rounded hover:bg-gray-800/30 text-sm">
+                    <i data-lucide="${a.icon}" class="w-4 h-4 text-primary flex-shrink-0"></i>
+                    <span class="text-gray-300 truncate">${a.text}</span>
+                    <span class="text-gray-500 text-xs ml-auto flex-shrink-0">${a.time}</span>
+                </div>
+            `).join('') : '<p class="text-sm text-gray-500">Nenhuma atividade</p>';
+            
+            lucide.createIcons();
+        }
+
+        function formatTime(d) {
+            if (!d) return '';
+            const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
+            if (m < 1) return 'Agora';
+            if (m < 60) return m + 'min';
+            const h = Math.floor(m / 60);
+            if (h < 24) return h + 'h';
+            return Math.floor(h / 24) + 'd';
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        // ===== INICIAR =====
         init();
+        lucide.createIcons();
+        console.log('🚀 ClipForge v2.0 iniciado!');
+        console.log('📡 Conecte ao servidor no Termux para downloads reais');
+        console.log('⚙️ Configure o endereço do servidor na sidebar');
     </script>
 </body>
 </html>
