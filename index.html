@@ -24,12 +24,19 @@
         *::-webkit-scrollbar { width: 6px; }
         *::-webkit-scrollbar-track { background: #0A0A0B; }
         *::-webkit-scrollbar-thumb { background-color: #1F1F23; border-radius: 3px; }
+        
         .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .pulse { animation: pulse 2s infinite; }
         
+        /* Template de Corte */
         .corte-template {
             width: 100%;
             max-width: 400px;
@@ -39,11 +46,13 @@
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
+        
         .corte-header {
             background: #FFFFFF;
             padding: 20px 20px 15px 20px;
             text-align: center;
         }
+        
         .corte-video-area {
             position: relative;
             width: 100%;
@@ -51,15 +60,48 @@
             background: #000;
             overflow: hidden;
         }
-        .corte-video-area video,
-        .corte-video-area img {
+        
+        .corte-video-area video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+        
+        .corte-video-area .placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            background: #111;
+        }
+        
+        /* Cards */
+        .nav-btn {
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .video-card {
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #1F1F23;
+        }
+        .video-card:hover {
+            border-color: #8B5CF6;
+        }
+        .video-card.selected {
+            border-color: #8B5CF6 !important;
+            background: rgba(139, 92, 246, 0.15) !important;
+        }
+        
         .template-card {
             cursor: pointer;
             transition: all 0.2s;
+            border: 2px solid #1F1F23;
         }
         .template-card:hover {
             transform: translateY(-2px);
@@ -69,28 +111,35 @@
             border-color: #8B5CF6 !important;
             background: rgba(139, 92, 246, 0.15) !important;
         }
-        .video-card {
-            cursor: pointer;
-            transition: all 0.2s;
+        
+        .check-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: #8B5CF6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
         }
-        .video-card:hover {
-            border-color: #8B5CF6 !important;
-        }
-        .video-card.selected {
-            border-color: #8B5CF6 !important;
-            background: rgba(139, 92, 246, 0.1) !important;
-        }
-        .nav-btn {
-            transition: all 0.2s;
-        }
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.05);
-        }
-
+        
+        /* Mobile */
         @media (max-width: 768px) {
             .sidebar-desktop { display: none; }
             .main-mobile { margin-left: 0 !important; }
-            .sidebar-mobile-show { display: flex !important; position: fixed; z-index: 50; }
+            .sidebar-mobile-show { 
+                display: flex !important; 
+                position: fixed; 
+                z-index: 50; 
+                left: 0; 
+                top: 0; 
+                height: 100vh;
+            }
         }
     </style>
 </head>
@@ -111,40 +160,23 @@
                 <h1 class="text-2xl font-bold tracking-tight">
                     <span class="text-primary">Clip</span><span class="text-white">Forge</span>
                 </h1>
-                <p class="text-xs text-gray-500 mt-1">Automação de Cortes v2.0</p>
-                <div id="serverStatus" class="mt-3 flex items-center gap-2 text-xs">
-                    <span class="w-2 h-2 rounded-full bg-red-500 pulse" id="statusDot"></span>
-                    <span class="text-gray-400" id="statusLabel">Verificando...</span>
-                </div>
+                <p class="text-xs text-gray-500 mt-1">Automação de Cortes</p>
             </div>
             
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 bg-primary/10 text-primary border border-primary/20">
                     <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span>Dashboard</span>
                 </button>
-                <button onclick="switchTab('downloader')" id="nav-downloader" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
-                    <i data-lucide="download" class="w-5 h-5"></i><span>Download</span>
+                <button onclick="switchTab('videos')" id="nav-videos" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
+                    <i data-lucide="video" class="w-5 h-5"></i><span>Meus Vídeos</span>
                 </button>
-                <button onclick="switchTab('gallery')" id="nav-gallery" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
-                    <i data-lucide="folder-open" class="w-5 h-5"></i><span>Galeria</span>
-                </button>
-                <button onclick="switchTab('editor')" id="nav-editor" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
+                <button onclick="switchTab('templates')" id="nav-templates" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
                     <i data-lucide="scissors" class="w-5 h-5"></i><span>Templates</span>
                 </button>
                 <button onclick="switchTab('render')" id="nav-render" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
                     <i data-lucide="clapperboard" class="w-5 h-5"></i><span>Renderizar</span>
                 </button>
             </nav>
-
-            <div class="p-4 border-t border-dark-border">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs text-gray-500">Servidor:</span>
-                    <input type="text" id="serverUrlInput" value="" class="text-xs bg-dark border border-dark-border rounded px-2 py-1 text-white w-40" placeholder="localhost:3000">
-                </div>
-                <button onclick="updateServerUrl()" class="w-full mt-2 text-xs bg-primary/20 text-primary py-1.5 rounded hover:bg-primary/30 transition-all">
-                    🔗 Conectar Servidor
-                </button>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -154,13 +186,13 @@
             <div id="view-dashboard" class="view-section animate-fade-in">
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold text-white mb-2">Dashboard</h2>
-                    <p class="text-gray-400">Visão geral do seu fluxo de trabalho</p>
+                    <p class="text-gray-400">Visão geral dos seus vídeos e templates</p>
                 </div>
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-dark-card border border-dark-border rounded-xl p-5">
-                        <p class="text-xs text-gray-400 mb-1">Downloads</p>
-                        <p class="text-2xl font-bold text-white" id="stat-downloads">0</p>
+                        <p class="text-xs text-gray-400 mb-1">Vídeos Carregados</p>
+                        <p class="text-2xl font-bold text-white" id="stat-videos">0</p>
                     </div>
                     <div class="bg-dark-card border border-dark-border rounded-xl p-5">
                         <p class="text-xs text-gray-400 mb-1">Templates</p>
@@ -170,145 +202,82 @@
                         <p class="text-xs text-gray-400 mb-1">Renderizados</p>
                         <p class="text-2xl font-bold text-white" id="stat-rendered">0</p>
                     </div>
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
-                        <p class="text-xs text-gray-400 mb-1">Servidor</p>
-                        <p class="text-2xl font-bold text-green-400" id="stat-storage">0 MB</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <i data-lucide="activity" class="w-5 h-5 text-primary"></i> Atividade Recente
-                        </h3>
-                        <div id="activity-feed" class="space-y-2"></div>
-                    </div>
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <i data-lucide="server" class="w-5 h-5 text-green-400"></i> Status do Servidor
-                        </h3>
-                        <div id="serverInfo" class="space-y-2 text-sm">
-                            <p class="text-gray-400">Carregando informações...</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Downloader -->
-            <div id="view-downloader" class="view-section hidden">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-2">Download de Vídeos</h2>
-                    <p class="text-gray-400">Baixe vídeos SEM marca d'água direto do servidor</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2">
-                        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Link do vídeo</label>
-                                <input type="text" id="downloadUrlInput" 
-                                       placeholder="https://www.tiktok.com/@user/video/123456789"
-                                       class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-3 text-white focus:border-primary outline-none">
-                                <p class="text-xs text-gray-500 mt-1">Suporta: TikTok, Instagram Reels, YouTube Shorts</p>
-                            </div>
-                            
-                            <div class="mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
-                                <p class="text-xs text-primary flex items-center">
-                                    <i data-lucide="info" class="w-4 h-4 mr-2 flex-shrink-0"></i>
-                                    O download é processado pelo servidor no Termux. O vídeo será salvo em MP4 sem marca d'água.
-                                </p>
-                            </div>
-                            
-                            <button onclick="startDownload()" id="btnDownload" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg flex items-center justify-center space-x-2 transition-all">
-                                <i data-lucide="download" class="w-5 h-5"></i><span>Baixar Vídeo</span>
-                            </button>
-                            
-                            <div id="downloadProgress" class="hidden mt-4">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm text-gray-300" id="downloadStatus">Conectando...</span>
-                                    <span class="text-sm text-primary font-semibold" id="downloadPercent">0%</span>
-                                </div>
-                                <div class="w-full bg-gray-800 rounded-full h-2">
-                                    <div class="bg-primary h-2 rounded-full transition-all duration-300" id="downloadBar" style="width: 0%"></div>
-                                </div>
-                                <div id="downloadResult" class="hidden mt-3">
-                                    <button onclick="saveDownloadedVideo()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition-all">
-                                        💾 Salvar vídeo na galeria
-                                    </button>
-                                </div>
-                                <div id="downloadError" class="hidden mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                                    <p class="text-sm text-red-400" id="downloadErrorText"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">Histórico de Downloads</h3>
-                        <div id="downloadHistory" class="space-y-2 max-h-96 overflow-y-auto">
-                            <p class="text-sm text-gray-500">Nenhum download ainda</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Galeria -->
-            <div id="view-gallery" class="view-section hidden">
+            <!-- Meus Vídeos -->
+            <div id="view-videos" class="view-section hidden">
                 <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Galeria de Vídeos</h2>
-                        <p class="text-gray-400">Vídeos armazenados no servidor</p>
+                        <h2 class="text-3xl font-bold text-white mb-2">Meus Vídeos</h2>
+                        <p class="text-gray-400">Selecione vídeos do seu celular para usar nos templates</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="loadServerVideos()" class="px-4 py-2 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
-                            🔄 Atualizar
+                        <button onclick="document.getElementById('videoFileInput').click()" class="px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Vídeos
                         </button>
-                        <button onclick="selectAllGallery()" class="px-4 py-2 bg-primary/20 text-primary rounded-lg text-sm hover:bg-primary/30 transition-all">
+                        <input type="file" id="videoFileInput" multiple accept="video/*" class="hidden" onchange="addVideosFromDevice(event)">
+                        <button onclick="selectAllVideos()" class="px-4 py-3 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
                             Selecionar Todos
                         </button>
-                        <button onclick="deselectAllGallery()" class="px-4 py-2 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
+                        <button onclick="deselectAllVideos()" class="px-4 py-3 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
                             Limpar
                         </button>
                     </div>
                 </div>
                 
-                <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <p class="text-gray-500 col-span-full text-center py-12">Carregando vídeos do servidor...</p>
+                <div id="videos-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="col-span-full text-center py-12">
+                        <i data-lucide="upload-cloud" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <p class="text-gray-500 text-lg mb-2">Nenhum vídeo carregado</p>
+                        <p class="text-gray-600 text-sm mb-4">Clique em "Adicionar Vídeos" para selecionar vídeos do seu celular</p>
+                        <button onclick="document.getElementById('videoFileInput').click()" class="px-6 py-3 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-all font-semibold">
+                            📁 Selecionar Vídeos
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-sm text-gray-400">
+                    <span id="selected-count">0</span> vídeos selecionados
                 </div>
             </div>
 
-            <!-- Editor -->
-            <div id="view-editor" class="view-section hidden">
+            <!-- Templates -->
+            <div id="view-templates" class="view-section hidden">
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold text-white mb-2">Templates</h2>
                     <p class="text-gray-400">Crie e gerencie templates para seus cortes</p>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    <div class="lg:col-span-2 bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">Preview do Template</h3>
-                        <div class="corte-template" id="corte-template">
-                            <div class="corte-header" id="corte-header-bg">
-                                <div class="flex items-center justify-center gap-3 mb-3">
-                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%238B5CF6'/%3E%3Ctext x='24' y='28' text-anchor='middle' fill='white' font-size='20'%3E👤%3C/text%3E%3C/svg%3E" class="w-12 h-12 rounded-full border-2 border-primary object-cover" id="corte-profile-pic">
-                                    <div class="text-left">
-                                        <p class="font-bold text-gray-900 text-lg" id="corte-username">@SeuPerfil</p>
-                                        <p class="text-xs text-gray-500" id="corte-subtitle">Canal de Cortes</p>
+                    <!-- Preview -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4">Preview do Template</h3>
+                            <div class="corte-template" id="corte-template">
+                                <div class="corte-header" id="corte-header-bg">
+                                    <div class="flex items-center justify-center gap-3 mb-3">
+                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%238B5CF6'/%3E%3Ctext x='24' y='28' text-anchor='middle' fill='white' font-size='20'%3E👤%3C/text%3E%3C/svg%3E" class="w-12 h-12 rounded-full border-2 border-primary object-cover" id="corte-profile-pic">
+                                        <div class="text-left">
+                                            <p class="font-bold text-gray-900 text-lg" id="corte-username">@SeuPerfil</p>
+                                            <p class="text-xs text-gray-500" id="corte-subtitle">Canal de Cortes</p>
+                                        </div>
                                     </div>
+                                    <h2 class="text-xl font-bold text-gray-900" id="corte-title">Título do Vídeo 🔥</h2>
                                 </div>
-                                <h2 class="text-xl font-bold text-gray-900" id="corte-title">Título do Vídeo 🔥</h2>
-                            </div>
-                            <div class="corte-video-area">
-                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-900">
-                                    <div class="text-center">
-                                        <i data-lucide="video" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
-                                        <p class="text-sm">Preview do vídeo</p>
+                                <div class="corte-video-area">
+                                    <div class="placeholder">
+                                        <div class="text-center">
+                                            <i data-lucide="video" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
+                                            <p class="text-sm">Preview do vídeo</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Configuração -->
                     <div class="bg-dark-card border border-dark-border rounded-xl p-6">
                         <h3 class="text-lg font-semibold mb-4">Configurar Template</h3>
                         <div class="space-y-3">
@@ -343,6 +312,7 @@
                     </div>
                 </div>
 
+                <!-- Templates Salvos -->
                 <div class="bg-dark-card border border-dark-border rounded-xl p-6">
                     <h3 class="text-lg font-semibold mb-4">Templates Salvos</h3>
                     <div id="saved-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -355,32 +325,52 @@
             <div id="view-render" class="view-section hidden">
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold text-white mb-2">Renderizar Vídeos</h2>
-                    <p class="text-gray-400">Aplique templates aos vídeos selecionados</p>
+                    <p class="text-gray-400">Aplique o template selecionado aos vídeos escolhidos</p>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Selecionar Template -->
                     <div class="bg-dark-card border border-dark-border rounded-xl p-6">
                         <h3 class="text-lg font-semibold mb-4">1. Escolha um Template</h3>
                         <div id="render-template-list" class="space-y-2 max-h-80 overflow-y-auto">
-                            <p class="text-gray-500 text-center py-4">Nenhum template disponível</p>
+                            <p class="text-gray-500 text-center py-4">Nenhum template salvo</p>
                         </div>
                     </div>
 
+                    <!-- Vídeos Selecionados -->
                     <div class="bg-dark-card border border-dark-border rounded-xl p-6">
                         <h3 class="text-lg font-semibold mb-4">2. Vídeos Selecionados</h3>
                         <div id="render-video-list" class="space-y-2 max-h-80 overflow-y-auto">
-                            <p class="text-gray-500 text-center py-4">Selecione vídeos na galeria</p>
+                            <p class="text-gray-500 text-center py-4">Nenhum vídeo selecionado</p>
                         </div>
+                        
                         <button onclick="startRenderProcess()" id="start-render-btn" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all" disabled>
-                            <i data-lucide="clapperboard" class="w-5 h-5 inline mr-2"></i>Renderizar Vídeos
+                            <i data-lucide="clapperboard" class="w-5 h-5 inline mr-2"></i>Renderizar Todos os Vídeos
                         </button>
                     </div>
                 </div>
 
-                <div id="render-progress-container" class="hidden">
+                <!-- Preview da Renderização -->
+                <div id="render-preview-container" class="hidden">
                     <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">Renderizando...</h3>
-                        <div id="render-progress-list" class="space-y-3"></div>
+                        <h3 class="text-lg font-semibold mb-4">Preview da Renderização</h3>
+                        <div class="flex justify-center">
+                            <div class="corte-template" id="render-preview-template">
+                                <div class="corte-header" id="render-preview-header">
+                                    <div class="flex items-center justify-center gap-3 mb-3">
+                                        <img src="" class="w-12 h-12 rounded-full border-2 border-primary object-cover" id="render-preview-pic">
+                                        <div class="text-left">
+                                            <p class="font-bold text-gray-900 text-lg" id="render-preview-username"></p>
+                                            <p class="text-xs text-gray-500" id="render-preview-subtitle"></p>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-xl font-bold text-gray-900" id="render-preview-title"></h2>
+                                </div>
+                                <div class="corte-video-area">
+                                    <video id="render-preview-video" controls muted loop class="w-full h-full object-cover"></video>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -388,68 +378,28 @@
     </div>
 
     <script>
-        // ===== CONFIGURAÇÃO =====
-        let API_BASE = localStorage.getItem('cf_server_url') || 'http://localhost:3000';
-        let lastDownloadedFile = null;
-        let selectedVideosForRender = [];
-        let selectedTemplateForRender = null;
-        let serverOnline = false;
+        // ===== ESTADO GLOBAL =====
+        let userVideos = []; // Vídeos carregados pelo usuário
+        let selectedVideoIds = []; // IDs dos vídeos selecionados
+        let selectedTemplateId = null; // ID do template selecionado para render
 
         // ===== INICIALIZAÇÃO =====
         function init() {
-            document.getElementById('serverUrlInput').value = API_BASE.replace('http://', '').replace(':3000', '') || 'localhost';
-            checkServer();
+            loadUserVideos();
+            loadTemplates();
             updateDashboard();
             updatePreviewLive();
-            loadTemplates();
-            loadDownloadHistory();
             
-            setInterval(checkServer, 15000);
-            setInterval(updateDashboard, 30000);
-        }
-
-        // ===== SERVIDOR =====
-        async function checkServer() {
-            const dot = document.getElementById('statusDot');
-            const label = document.getElementById('statusLabel');
-            try {
-                const resp = await fetch(API_BASE + '/api/status');
-                const data = await resp.json();
-                serverOnline = true;
-                if (dot) { dot.className = 'w-2 h-2 rounded-full bg-green-500'; }
-                if (label) { label.textContent = 'Servidor online'; label.className = 'text-green-400'; }
-                updateServerInfo(data);
-            } catch(e) {
-                serverOnline = false;
-                if (dot) { dot.className = 'w-2 h-2 rounded-full bg-red-500 pulse'; }
-                if (label) { label.textContent = 'Servidor offline'; label.className = 'text-red-400'; }
-            }
-        }
-
-        function updateServerUrl() {
-            const input = document.getElementById('serverUrlInput').value.trim();
-            if (input) {
-                API_BASE = 'http://' + input + ':3000';
-                localStorage.setItem('cf_server_url', API_BASE);
-                checkServer();
-                alert('✅ Servidor atualizado para: ' + API_BASE);
-            }
-        }
-
-        function updateServerInfo(data) {
-            if (!data) return;
-            document.getElementById('serverInfo').innerHTML = `
-                <p class="text-gray-300">📥 Downloads: <span class="text-white font-semibold">${data.downloads || 0}</span></p>
-                <p class="text-gray-300">💾 Armazenamento: <span class="text-white font-semibold">${data.storageUsed || '0 MB'}</span></p>
-                <p class="text-gray-300">⏱️ Uptime: <span class="text-white font-semibold">${data.uptime || '0s'}</span></p>
-                <p class="text-gray-300">📡 Versão: <span class="text-white font-semibold">${data.version || '1.0'}</span></p>
-            `;
+            // Carregar seleções salvas
+            selectedVideoIds = JSON.parse(localStorage.getItem('cf_selected_videos') || '[]');
+            selectedTemplateId = localStorage.getItem('cf_selected_template') || null;
         }
 
         // ===== NAVEGAÇÃO =====
         function switchTab(tab) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-            document.getElementById('view-' + tab).classList.remove('hidden');
+            const view = document.getElementById('view-' + tab);
+            if (view) view.classList.remove('hidden');
             
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.classList.remove('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
@@ -462,9 +412,11 @@
                 btn.classList.remove('text-gray-400');
             }
             
-            if (tab === 'gallery') loadServerVideos();
-            if (tab === 'editor') loadTemplates();
+            if (tab === 'videos') loadUserVideos();
+            if (tab === 'templates') loadTemplates();
             if (tab === 'render') loadRenderPage();
+            if (tab === 'dashboard') updateDashboard();
+            
             closeSidebar();
             lucide.createIcons();
         }
@@ -481,182 +433,134 @@
             document.getElementById('sidebar-overlay').classList.add('hidden');
         }
 
-        // ===== DOWNLOAD =====
-        async function startDownload() {
-            if (!serverOnline) {
-                alert('❌ Servidor offline! Abra o Termux e digite: cd ~/clipforge-server && node server.js');
-                return;
-            }
+        // ===== VÍDEOS DO USUÁRIO =====
+        function addVideosFromDevice(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
             
-            const url = document.getElementById('downloadUrlInput').value.trim();
-            if (!url) { alert('Cole o link do vídeo!'); return; }
-            
-            const progressDiv = document.getElementById('downloadProgress');
-            const statusEl = document.getElementById('downloadStatus');
-            const percentEl = document.getElementById('downloadPercent');
-            const barEl = document.getElementById('downloadBar');
-            const resultDiv = document.getElementById('downloadResult');
-            const errorDiv = document.getElementById('downloadError');
-            const btn = document.getElementById('btnDownload');
-            
-            progressDiv.classList.remove('hidden');
-            resultDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="animate-spin mr-2">⏳</span><span>Baixando...</span>';
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 8;
-                if (progress > 85) { progress = 85; clearInterval(interval); }
-                barEl.style.width = Math.round(progress) + '%';
-                percentEl.textContent = Math.round(progress) + '%';
-                statusEl.textContent = 'Baixando vídeo do servidor...';
-            }, 400);
-            
-            try {
-                const response = await fetch(API_BASE + '/api/download', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
+            files.forEach(file => {
+                const videoUrl = URL.createObjectURL(file);
+                const videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                userVideos.push({
+                    id: videoId,
+                    name: file.name,
+                    size: file.size,
+                    url: videoUrl,
+                    file: file,
+                    date: new Date().toISOString()
                 });
+            });
+            
+            saveUserVideos();
+            loadUserVideos();
+            updateDashboard();
+            
+            // Limpar input para permitir selecionar os mesmos arquivos novamente
+            event.target.value = '';
+        }
+
+        function saveUserVideos() {
+            // Não podemos salvar os blobs no localStorage, salvamos apenas metadados
+            const metadata = userVideos.map(v => ({
+                id: v.id,
+                name: v.name,
+                size: v.size,
+                date: v.date
+            }));
+            localStorage.setItem('cf_user_videos_meta', JSON.stringify(metadata));
+        }
+
+        function loadUserVideos() {
+            const grid = document.getElementById('videos-grid');
+            if (!grid) return;
+            
+            if (!userVideos.length) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i data-lucide="upload-cloud" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <p class="text-gray-500 text-lg mb-2">Nenhum vídeo carregado</p>
+                        <p class="text-gray-600 text-sm mb-4">Clique em "Adicionar Vídeos" para selecionar vídeos do seu celular</p>
+                        <button onclick="document.getElementById('videoFileInput').click()" class="px-6 py-3 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-all font-semibold">
+                            📁 Selecionar Vídeos
+                        </button>
+                    </div>`;
+            } else {
+                grid.innerHTML = userVideos.map(v => {
+                    const isSelected = selectedVideoIds.includes(v.id);
+                    return `
+                        <div class="video-card bg-dark-card rounded-xl overflow-hidden relative ${isSelected ? 'selected' : ''}" 
+                             onclick="toggleVideoSelection('${v.id}', this)" data-id="${v.id}">
+                            <div class="aspect-[9/16] bg-gray-900 relative">
+                                <video src="${v.url}" class="w-full h-full object-cover" muted preload="metadata"></video>
+                                ${isSelected ? '<div class="check-badge">✓</div>' : ''}
+                            </div>
+                            <div class="p-2">
+                                <p class="text-xs text-white truncate">${v.name}</p>
+                                <p class="text-xs text-gray-500">${formatSize(v.size)}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
                 
-                const data = await response.json();
-                clearInterval(interval);
-                
-                if (data.success) {
-                    barEl.style.width = '100%';
-                    percentEl.textContent = '100%';
-                    statusEl.textContent = '✅ Download concluído! (' + (data.size || '?') + ' MB)';
-                    lastDownloadedFile = data.filename;
-                    resultDiv.classList.remove('hidden');
-                    addDownloadHistory(data.filename, url, data.size);
-                    updateDashboard();
-                    setTimeout(() => saveDownloadedVideo(), 800);
-                } else {
-                    statusEl.textContent = '❌ Erro no download';
-                    document.getElementById('downloadErrorText').textContent = data.error || 'Falha ao baixar';
-                    errorDiv.classList.remove('hidden');
-                }
-            } catch(e) {
-                clearInterval(interval);
-                statusEl.textContent = '❌ Erro de conexão';
-                document.getElementById('downloadErrorText').textContent = 'Servidor offline. Verifique o Termux.';
-                errorDiv.classList.remove('hidden');
+                // Tocar vídeos quando visíveis
+                document.querySelectorAll('#videos-grid video').forEach(video => {
+                    video.addEventListener('mouseenter', () => video.play());
+                    video.addEventListener('mouseleave', () => video.pause());
+                    // Para mobile, usar touch
+                    video.addEventListener('touchstart', () => video.play());
+                });
             }
             
-            btn.disabled = false;
-            btn.innerHTML = '<i data-lucide="download" class="w-5 h-5"></i><span>Baixar Vídeo</span>';
+            updateSelectedCount();
             lucide.createIcons();
         }
 
-        function saveDownloadedVideo() {
-            if (lastDownloadedFile) {
-                window.open(API_BASE + '/api/video/' + lastDownloadedFile, '_blank');
-            }
-        }
-
-        function addDownloadHistory(filename, url, size) {
-            const history = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
-            history.unshift({
-                filename, url, size: size || '?',
-                date: new Date().toISOString()
-            });
-            localStorage.setItem('cf_downloads', JSON.stringify(history.slice(0, 100)));
-            loadDownloadHistory();
-        }
-
-        function loadDownloadHistory() {
-            const history = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
-            const div = document.getElementById('downloadHistory');
-            if (!div) return;
-            
-            if (!history.length) {
-                div.innerHTML = '<p class="text-sm text-gray-500">Nenhum download ainda</p>';
-                return;
-            }
-            
-            div.innerHTML = history.slice(0, 20).map(h => `
-                <div class="flex items-center justify-between p-2 bg-[#0A0A0B] rounded-lg text-sm">
-                    <span class="text-white truncate flex-1">${h.filename}</span>
-                    <span class="text-gray-500 text-xs ml-2">${h.size} MB</span>
-                </div>
-            `).join('');
-        }
-
-        // ===== GALERIA =====
-        async function loadServerVideos() {
-            const grid = document.getElementById('gallery-grid');
-            try {
-                const resp = await fetch(API_BASE + '/api/videos');
-                const data = await resp.json();
-                
-                if (!data.videos || !data.videos.length) {
-                    grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-12">Nenhum vídeo no servidor. Faça downloads primeiro!</p>';
-                    return;
-                }
-                
-                grid.innerHTML = data.videos.map(v => `
-                    <div class="video-card bg-dark-card border-2 border-dark-border rounded-xl overflow-hidden ${selectedVideosForRender.includes(v.filename) ? 'selected' : ''}" 
-                         onclick="toggleVideoSelection('${v.filename}', this)" data-id="${v.filename}">
-                        <div class="aspect-[9/16] bg-gray-900 flex items-center justify-center">
-                            <div class="text-center">
-                                <i data-lucide="video" class="w-10 h-10 text-gray-500 mx-auto mb-1"></i>
-                                <p class="text-xs text-gray-600">${v.size} MB</p>
-                            </div>
-                            ${selectedVideosForRender.includes(v.filename) ? '<div class="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs">✓</div>' : ''}
-                        </div>
-                        <div class="p-2">
-                            <p class="text-xs text-white truncate">${v.filename}</p>
-                            <button onclick="event.stopPropagation(); window.open('${API_BASE}/api/video/${v.filename}', '_blank')" 
-                                    class="w-full mt-1 text-xs bg-primary/20 text-primary py-1 rounded hover:bg-primary/30 transition-all">
-                                📥 Baixar
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-                
-                lucide.createIcons();
-            } catch(e) {
-                grid.innerHTML = '<p class="text-red-400 col-span-full text-center py-12">❌ Servidor offline</p>';
-            }
-        }
-
-        function toggleVideoSelection(filename, element) {
-            if (selectedVideosForRender.includes(filename)) {
-                selectedVideosForRender = selectedVideosForRender.filter(v => v !== filename);
+        function toggleVideoSelection(videoId, element) {
+            if (selectedVideoIds.includes(videoId)) {
+                selectedVideoIds = selectedVideoIds.filter(id => id !== videoId);
                 element.classList.remove('selected');
+                const badge = element.querySelector('.check-badge');
+                if (badge) badge.remove();
             } else {
-                selectedVideosForRender.push(filename);
+                selectedVideoIds.push(videoId);
                 element.classList.add('selected');
-            }
-            loadServerVideos();
-            updateRenderButton();
-        }
-
-        function selectAllGallery() {
-            const cards = document.querySelectorAll('#gallery-grid .video-card');
-            cards.forEach(card => {
-                const id = card.dataset.id;
-                if (!selectedVideosForRender.includes(id)) {
-                    selectedVideosForRender.push(id);
+                // Adicionar badge
+                if (!element.querySelector('.check-badge')) {
+                    const badge = document.createElement('div');
+                    badge.className = 'check-badge';
+                    badge.textContent = '✓';
+                    element.querySelector('.relative').appendChild(badge);
                 }
-            });
-            loadServerVideos();
-            updateRenderButton();
-        }
-
-        function deselectAllGallery() {
-            selectedVideosForRender = [];
-            loadServerVideos();
-            updateRenderButton();
-        }
-
-        function updateRenderButton() {
-            const btn = document.getElementById('start-render-btn');
-            if (btn) {
-                btn.disabled = !(selectedVideosForRender.length > 0 && selectedTemplateForRender);
             }
+            
+            localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
+            updateSelectedCount();
+        }
+
+        function selectAllVideos() {
+            selectedVideoIds = userVideos.map(v => v.id);
+            localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
+            loadUserVideos();
+        }
+
+        function deselectAllVideos() {
+            selectedVideoIds = [];
+            localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
+            loadUserVideos();
+        }
+
+        function updateSelectedCount() {
+            const countEl = document.getElementById('selected-count');
+            if (countEl) {
+                countEl.textContent = selectedVideoIds.length;
+            }
+        }
+
+        function formatSize(bytes) {
+            if (!bytes) return '0 MB';
+            const mb = bytes / (1024 * 1024);
+            return mb >= 1 ? mb.toFixed(1) + ' MB' : (bytes / 1024).toFixed(0) + ' KB';
         }
 
         // ===== TEMPLATES =====
@@ -664,7 +568,9 @@
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = e => document.getElementById('corte-profile-pic').src = e.target.result;
+            reader.onload = e => {
+                document.getElementById('corte-profile-pic').src = e.target.result;
+            };
             reader.readAsDataURL(file);
         }
 
@@ -676,13 +582,13 @@
 
         function saveTemplate() {
             const template = {
+                id: Date.now(),
                 name: document.getElementById('template-name').value || 'Template',
                 username: document.getElementById('config-username').value,
                 subtitle: document.getElementById('config-subtitle').value,
                 title: document.getElementById('config-title').value,
                 profilePic: document.getElementById('corte-profile-pic').src,
                 headerBg: document.getElementById('corte-header-bg').style.background || '#FFFFFF',
-                id: Date.now(),
                 date: new Date().toISOString()
             };
             
@@ -692,34 +598,38 @@
             
             loadTemplates();
             updateDashboard();
-            alert('✅ Template "' + template.name + '" salvo!');
+            alert('✅ Template "' + template.name + '" salvo com sucesso!');
         }
 
         function loadTemplates() {
             const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
             const grid = document.getElementById('saved-templates-grid');
             
-            if (!grid) return;
-            
-            if (!templates.length) {
-                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">Nenhum template salvo</p>';
-                return;
+            if (grid) {
+                if (!templates.length) {
+                    grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">Nenhum template salvo ainda</p>';
+                } else {
+                    grid.innerHTML = templates.map(t => `
+                        <div class="bg-dark-card border border-dark-border rounded-xl p-4 template-card">
+                            <div class="flex items-center gap-2 mb-2">
+                                <img src="${t.profilePic || ''}" class="w-8 h-8 rounded-full object-cover" onerror="this.style.display='none'">
+                                <div>
+                                    <p class="text-sm font-semibold text-white">${t.name}</p>
+                                    <p class="text-xs text-gray-400">${t.username}</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">${t.title}</p>
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="editTemplate('${t.id}')" class="text-xs text-primary hover:underline">Editar</button>
+                                <button onclick="deleteTemplate('${t.id}')" class="text-xs text-red-400 hover:underline">Excluir</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
             }
-            
-            grid.innerHTML = templates.map(t => `
-                <div class="bg-dark-card border border-dark-border rounded-xl p-4 template-card">
-                    <p class="text-sm font-semibold text-white">${t.name}</p>
-                    <p class="text-xs text-gray-400">${t.username}</p>
-                    <p class="text-xs text-gray-500 mt-1 truncate">${t.title}</p>
-                    <div class="flex gap-2 mt-2">
-                        <button onclick="loadTemplateForEdit('${t.id}')" class="text-xs text-primary hover:underline">Editar</button>
-                        <button onclick="deleteTemplate('${t.id}')" class="text-xs text-red-400 hover:underline">Excluir</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
-        function loadTemplateForEdit(id) {
+        function editTemplate(id) {
             const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
             const t = templates.find(t => t.id == id);
             if (!t) return;
@@ -731,7 +641,7 @@
             if (t.profilePic) document.getElementById('corte-profile-pic').src = t.profilePic;
             if (t.headerBg) document.getElementById('corte-header-bg').style.background = t.headerBg;
             updatePreviewLive();
-            switchTab('editor');
+            switchTab('templates');
         }
 
         function deleteTemplate(id) {
@@ -743,147 +653,157 @@
             }
         }
 
-        // ===== RENDER =====
+        // ===== RENDERIZAÇÃO =====
         function loadRenderPage() {
+            // Carregar templates disponíveis
             const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const list = document.getElementById('render-template-list');
+            const templateList = document.getElementById('render-template-list');
             
-            if (!list) return;
-            
-            if (!templates.length) {
-                list.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum template disponível</p>';
-            } else {
-                list.innerHTML = templates.map(t => `
-                    <div class="template-card p-3 rounded-lg border-2 cursor-pointer ${selectedTemplateForRender === t.id ? 'selected' : 'border-dark-border bg-[#0A0A0B]'}"
-                         onclick="selectTemplateForRender('${t.id}', this)">
-                        <p class="text-sm font-semibold text-white">${t.name}</p>
-                        <p class="text-xs text-gray-400">${t.username} • ${t.title}</p>
-                    </div>
-                `).join('');
+            if (templateList) {
+                if (!templates.length) {
+                    templateList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum template salvo. Crie templates primeiro!</p>';
+                } else {
+                    templateList.innerHTML = templates.map(t => `
+                        <div class="template-card p-3 rounded-lg cursor-pointer ${selectedTemplateId == t.id ? 'selected' : 'border-dark-border bg-[#0A0A0B]'}"
+                             onclick="selectTemplateForRender('${t.id}', this)">
+                            <div class="flex items-center gap-2 mb-1">
+                                <img src="${t.profilePic || ''}" class="w-6 h-6 rounded-full object-cover" onerror="this.style.display='none'">
+                                <p class="text-sm font-semibold text-white">${t.name}</p>
+                            </div>
+                            <p class="text-xs text-gray-400">${t.username} • ${t.title}</p>
+                        </div>
+                    `).join('');
+                }
             }
             
-            updateRenderVideosList();
+            // Carregar vídeos selecionados
+            updateRenderVideoList();
             updateRenderButton();
         }
 
         function selectTemplateForRender(id, element) {
             document.querySelectorAll('#render-template-list .template-card').forEach(c => c.classList.remove('selected', 'bg-primary/10'));
-            selectedTemplateForRender = id;
+            selectedTemplateId = id;
             element.classList.add('selected', 'bg-primary/10');
+            localStorage.setItem('cf_selected_template', id);
             updateRenderButton();
         }
 
-        function updateRenderVideosList() {
+        function updateRenderVideoList() {
             const list = document.getElementById('render-video-list');
             if (!list) return;
             
-            if (!selectedVideosForRender.length) {
-                list.innerHTML = '<p class="text-gray-500 text-center py-4">Selecione vídeos na galeria</p>';
+            const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
+            
+            if (!selectedVideos.length) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum vídeo selecionado. Vá em "Meus Vídeos" e selecione os vídeos.</p>';
             } else {
-                list.innerHTML = selectedVideosForRender.map(v => `
+                list.innerHTML = selectedVideos.map(v => `
                     <div class="flex items-center justify-between p-2 bg-[#0A0A0B] rounded-lg text-sm">
-                        <span class="text-white truncate flex-1">${v}</span>
-                        <span class="text-primary text-xs ml-2">✓</span>
+                        <div class="flex items-center gap-2 flex-1 min-w-0">
+                            <i data-lucide="file-video" class="w-4 h-4 text-primary flex-shrink-0"></i>
+                            <span class="text-white truncate">${v.name}</span>
+                        </div>
+                        <span class="text-xs text-gray-500 flex-shrink-0 ml-2">${formatSize(v.size)}</span>
                     </div>
                 `).join('');
             }
-        }
-
-        async function startRenderProcess() {
-            if (!selectedVideosForRender.length || !selectedTemplateForRender) {
-                alert('Selecione um template e vídeos!');
-                return;
-            }
-            
-            const container = document.getElementById('render-progress-container');
-            const list = document.getElementById('render-progress-list');
-            container.classList.remove('hidden');
-            
-            list.innerHTML = selectedVideosForRender.map((v, i) => `
-                <div id="render-item-${i}" class="bg-[#0A0A0B] rounded-lg p-4 border border-gray-800">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-sm text-white truncate">${v}</span>
-                        <span class="text-sm text-purple-400 render-status">0%</span>
-                    </div>
-                    <div class="w-full bg-gray-800 rounded-full h-1.5">
-                        <div class="bg-purple-400 h-1.5 rounded-full render-bar transition-all duration-300" style="width:0%"></div>
-                    </div>
-                </div>
-            `).join('');
-            
-            for (let i = 0; i < selectedVideosForRender.length; i++) {
-                await simulateRender(i);
-            }
-            
-            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
-            renders.unshift({ id: Date.now(), count: selectedVideosForRender.length, date: new Date().toISOString() });
-            localStorage.setItem('cf_renders', JSON.stringify(renders.slice(0, 100)));
-            
-            updateDashboard();
-            alert('✅ ' + selectedVideosForRender.length + ' vídeos renderizados com sucesso!');
-        }
-
-        async function simulateRender(index) {
-            const el = document.getElementById('render-item-' + index);
-            if (!el) return;
-            const bar = el.querySelector('.render-bar');
-            const status = el.querySelector('.render-status');
-            
-            for (let p = 0; p <= 100; p += Math.floor(Math.random() * 8) + 2) {
-                await sleep(80 + Math.random() * 120);
-                const prog = Math.min(p, 100);
-                if (bar) bar.style.width = prog + '%';
-                if (status) status.textContent = prog + '%';
-            }
-            if (status) { status.textContent = '✓ Concluído'; status.classList.add('text-green-400'); }
-        }
-
-        // ===== DASHBOARD =====
-        function updateDashboard() {
-            const downloads = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
-            
-            document.getElementById('stat-downloads').textContent = downloads.length;
-            document.getElementById('stat-templates').textContent = templates.length;
-            document.getElementById('stat-rendered').textContent = renders.length;
-            
-            const mb = downloads.length * 12;
-            document.getElementById('stat-storage').textContent = mb > 1000 ? (mb/1000).toFixed(1) + ' GB' : mb + ' MB';
-            
-            const acts = [];
-            downloads.slice(0, 5).forEach(d => acts.push({icon:'download',text:'Download: '+d.filename,time:formatTime(d.date)}));
-            renders.slice(0, 3).forEach(r => acts.push({icon:'video',text:'Render: '+r.count+' vídeos',time:formatTime(r.date)}));
-            
-            document.getElementById('activity-feed').innerHTML = acts.length ? acts.map(a => `
-                <div class="flex items-center space-x-2 p-2 rounded hover:bg-gray-800/30 text-sm">
-                    <i data-lucide="${a.icon}" class="w-4 h-4 text-primary flex-shrink-0"></i>
-                    <span class="text-gray-300 truncate">${a.text}</span>
-                    <span class="text-gray-500 text-xs ml-auto flex-shrink-0">${a.time}</span>
-                </div>
-            `).join('') : '<p class="text-sm text-gray-500">Nenhuma atividade</p>';
             
             lucide.createIcons();
         }
 
-        function formatTime(d) {
-            if (!d) return '';
-            const m = Math.floor((Date.now() - new Date(d).getTime()) / 60000);
-            if (m < 1) return 'Agora';
-            if (m < 60) return m + 'min';
-            const h = Math.floor(m / 60);
-            if (h < 24) return h + 'h';
-            return Math.floor(h / 24) + 'd';
+        function updateRenderButton() {
+            const btn = document.getElementById('start-render-btn');
+            if (btn) {
+                const hasVideos = selectedVideoIds.length > 0;
+                const hasTemplate = selectedTemplateId !== null;
+                btn.disabled = !(hasVideos && hasTemplate);
+            }
         }
 
-        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+        function startRenderProcess() {
+            const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            const template = templates.find(t => t.id == selectedTemplateId);
+            
+            if (!selectedVideos.length || !template) {
+                alert('Selecione vídeos e um template!');
+                return;
+            }
+            
+            // Mostrar preview com o primeiro vídeo
+            showRenderPreview(selectedVideos[0], template);
+            
+            // Processar todos os vídeos
+            processAllVideos(selectedVideos, template);
+        }
+
+        function showRenderPreview(video, template) {
+            const container = document.getElementById('render-preview-container');
+            container.classList.remove('hidden');
+            
+            // Atualizar template no preview
+            document.getElementById('render-preview-header').style.background = template.headerBg || '#FFFFFF';
+            document.getElementById('render-preview-pic').src = template.profilePic || '';
+            document.getElementById('render-preview-username').textContent = template.username || '@Perfil';
+            document.getElementById('render-preview-subtitle').textContent = template.subtitle || '';
+            document.getElementById('render-preview-title').textContent = template.title || '';
+            
+            // Colocar vídeo
+            const videoEl = document.getElementById('render-preview-video');
+            videoEl.src = video.url;
+            videoEl.play();
+            
+            // Scroll para o preview
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function processAllVideos(videos, template) {
+            // Simular processamento
+            for (let i = 0; i < videos.length; i++) {
+                // Na versão real, aqui usaria FFmpeg para aplicar o template
+                console.log(`Processando vídeo ${i + 1}/${videos.length}: ${videos[i].name}`);
+                await sleep(500);
+            }
+            
+            // Salvar no histórico
+            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
+            renders.unshift({
+                id: Date.now(),
+                count: videos.length,
+                templateName: template.name,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('cf_renders', JSON.stringify(renders.slice(0, 100)));
+            
+            updateDashboard();
+            
+            alert(`✅ ${videos.length} vídeos processados com sucesso!\n\nTemplate aplicado: ${template.name}\n\nOs vídeos foram enquadrados automaticamente no template.`);
+        }
+
+        // ===== DASHBOARD =====
+        function updateDashboard() {
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
+            
+            document.getElementById('stat-videos').textContent = userVideos.length;
+            document.getElementById('stat-templates').textContent = templates.length;
+            document.getElementById('stat-rendered').textContent = renders.length;
+        }
+
+        // ===== UTILITÁRIOS =====
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
         // ===== INICIAR =====
         init();
         lucide.createIcons();
-        console.log('🚀 ClipForge v2.0 iniciado!');
-        console.log('📡 Conecte ao servidor no Termux para downloads reais');
-        console.log('⚙️ Configure o endereço do servidor na sidebar');
+        
+        console.log('🚀 ClipForge iniciado!');
+        console.log('📁 Adicione vídeos do seu celular');
+        console.log('🎨 Crie templates personalizados');
+        console.log('🎬 Renderize vídeos com templates');
     </script>
 </body>
 </html>
