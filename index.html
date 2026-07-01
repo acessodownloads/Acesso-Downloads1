@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ClipForge - Automação de Cortes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -12,47 +12,136 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: { DEFAULT: '#8B5CF6', dark: '#7C3AED' },
-                        dark: { DEFAULT: '#0A0A0B', card: '#121214', border: '#1F1F23' }
+                        primary: { DEFAULT: '#8B5CF6', dark: '#7C3AED', light: '#A78BFA' },
+                        dark: { DEFAULT: '#0A0A0B', card: '#121214', border: '#1F1F23', hover: '#1A1A1F' },
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        danger: '#EF4444'
                     }
                 }
             }
         }
     </script>
     <style>
-        * { scrollbar-width: thin; scrollbar-color: #1F1F23 #0A0A0B; }
-        *::-webkit-scrollbar { width: 6px; }
+        :root {
+            --safe-bottom: env(safe-area-inset-bottom, 16px);
+        }
+        
+        * { 
+            scrollbar-width: thin; 
+            scrollbar-color: #1F1F23 #0A0A0B;
+            -webkit-tap-highlight-color: transparent;
+        }
+        *::-webkit-scrollbar { width: 4px; }
         *::-webkit-scrollbar-track { background: #0A0A0B; }
-        *::-webkit-scrollbar-thumb { background-color: #1F1F23; border-radius: 3px; }
+        *::-webkit-scrollbar-thumb { background-color: #1F1F23; border-radius: 2px; }
+        
+        body {
+            background: #0A0A0B;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
         
         .hidden { display: none !important; }
         
         @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
+            from { opacity: 0; transform: translateY(12px); } 
             to { opacity: 1; transform: translateY(0); } 
         }
-        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes slideUp { 
+            from { transform: translateY(100%); } 
+            to { transform: translateY(0); } 
+        }
+        @keyframes pulse { 
+            0%, 100% { opacity: 1; } 
+            50% { opacity: 0.5; } 
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
         
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animate-fade-in { animation: fadeIn 0.35s ease-out; }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
         .pulse { animation: pulse 2s infinite; }
         
-        /* Template de Corte */
+        .shimmer {
+            background: linear-gradient(90deg, #1F1F23 25%, #2A2A2E 50%, #1F1F23 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        /* Cards e elementos */
+        .card {
+            background: #121214;
+            border: 1px solid #1F1F23;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            white-space: nowrap;
+        }
+        .btn:active { transform: scale(0.97); }
+        
+        .btn-primary { background: #8B5CF6; color: #fff; }
+        .btn-primary:hover { background: #7C3AED; }
+        .btn-primary:disabled { background: #4B3A6B; color: #8B8B9A; }
+        
+        .btn-success { background: #10B981; color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid #1F1F23; color: #fff; }
+        .btn-outline:hover { background: #1A1A1F; border-color: #8B5CF6; }
+        .btn-danger { background: transparent; border: 1px solid #EF4444; color: #EF4444; }
+        
+        .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 8px; width: auto; }
+        
+        /* Inputs */
+        input[type="text"], input[type="color"], textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0A0A0B;
+            border: 1px solid #1F1F23;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #8B5CF6;
+        }
+        
+        /* Template */
         .corte-template {
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             margin: 0 auto;
             background: #FFFFFF;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
-        
         .corte-header {
             background: #FFFFFF;
-            padding: 20px 20px 15px 20px;
+            padding: 16px;
             text-align: center;
         }
-        
         .corte-video-area {
             position: relative;
             width: 100%;
@@ -60,750 +149,978 @@
             background: #000;
             overflow: hidden;
         }
-        
         .corte-video-area video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
         
-        .corte-video-area .placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            background: #111;
-        }
-        
-        /* Cards */
-        .nav-btn {
-            transition: all 0.2s;
-        }
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.05);
-        }
-        
+        /* Video Card */
         .video-card {
             cursor: pointer;
             transition: all 0.2s;
             border: 2px solid #1F1F23;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #121214;
+            position: relative;
         }
-        .video-card:hover {
-            border-color: #8B5CF6;
-        }
+        .video-card:active { transform: scale(0.98); }
         .video-card.selected {
             border-color: #8B5CF6 !important;
-            background: rgba(139, 92, 246, 0.15) !important;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .video-card .check-overlay {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: all 0.2s;
+        }
+        .video-card.selected .check-overlay {
+            background: #8B5CF6;
+            border-color: #8B5CF6;
         }
         
+        /* Template Card */
         .template-card {
             cursor: pointer;
             transition: all 0.2s;
             border: 2px solid #1F1F23;
+            border-radius: 12px;
+            background: #121214;
         }
-        .template-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
-        }
+        .template-card:active { transform: scale(0.98); }
         .template-card.selected {
             border-color: #8B5CF6 !important;
-            background: rgba(139, 92, 246, 0.15) !important;
+            background: rgba(139, 92, 246, 0.1) !important;
         }
         
-        .check-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 24px;
-            height: 24px;
-            background: #8B5CF6;
-            border-radius: 50%;
+        /* Bottom Navigation Mobile */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #121214;
+            border-top: 1px solid #1F1F23;
             display: flex;
+            z-index: 40;
+            padding-bottom: var(--safe-bottom);
+        }
+        .bottom-nav button {
+            flex: 1;
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
+            gap: 2px;
+            background: transparent;
+            border: none;
+            color: #6B7280;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .bottom-nav button.active {
+            color: #8B5CF6;
+        }
+        .bottom-nav button i {
+            width: 22px;
+            height: 22px;
         }
         
-        /* Mobile */
-        @media (max-width: 768px) {
-            .sidebar-desktop { display: none; }
-            .main-mobile { margin-left: 0 !important; }
-            .sidebar-mobile-show { 
-                display: flex !important; 
-                position: fixed; 
-                z-index: 50; 
-                left: 0; 
-                top: 0; 
-                height: 100vh;
-            }
+        /* Progress */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #1F1F23;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8B5CF6, #A78BFA);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-primary { background: rgba(139, 92, 246, 0.2); color: #A78BFA; }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10B981; }
+        
+        /* Responsivo */
+        @media (min-width: 768px) {
+            .bottom-nav { display: none; }
+            .desktop-sidebar { display: flex; }
+            .main-desktop { margin-left: 240px; }
+            .mobile-only { display: none; }
+        }
+        @media (max-width: 767px) {
+            .desktop-sidebar { display: none; }
+            .main-mobile { padding-bottom: 80px; }
+            .desktop-only { display: none; }
         }
     </style>
 </head>
-<body class="bg-dark text-gray-100">
-    <div id="app" class="min-h-screen flex flex-col md:flex-row">
+<body>
+
+<div id="app" class="min-h-screen flex flex-col md:flex-row">
+    
+    <!-- Sidebar Desktop -->
+    <aside class="w-60 h-screen bg-dark-card border-r border-dark-border fixed left-0 top-0 z-30 flex-col hidden desktop-only desktop-sidebar">
+        <div class="p-5 border-b border-dark-border">
+            <h1 class="text-xl font-bold"><span class="text-primary">Clip</span><span class="text-white">Forge</span></h1>
+            <p class="text-xs text-gray-500 mt-1">Automação de Cortes</p>
+        </div>
+        <nav class="flex-1 p-3 space-y-1">
+            <button onclick="switchTab('videos')" id="nav-desktop-videos" class="w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 bg-primary/10 text-primary border border-primary/20 text-sm">
+                <i data-lucide="video" class="w-5 h-5"></i><span>Meus Vídeos</span>
+            </button>
+            <button onclick="switchTab('templates')" id="nav-desktop-templates" class="w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400 hover:bg-dark-hover text-sm">
+                <i data-lucide="layout-template" class="w-5 h-5"></i><span>Templates</span>
+            </button>
+            <button onclick="switchTab('render')" id="nav-desktop-render" class="w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400 hover:bg-dark-hover text-sm">
+                <i data-lucide="clapperboard" class="w-5 h-5"></i><span>Renderizar</span>
+            </button>
+        </nav>
+        <div class="p-4 border-t border-dark-border">
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span> v2.0
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 md:ml-60 p-4 md:p-6 main-mobile">
         
-        <!-- Botão menu mobile -->
-        <button onclick="toggleSidebar()" class="md:hidden fixed top-4 left-4 z-50 bg-dark-card p-3 rounded-lg border border-dark-border shadow-lg">
-            <i data-lucide="menu" class="w-6 h-6 text-white"></i>
+        <!-- Header Mobile -->
+        <div class="flex items-center justify-between mb-4 desktop-only:hidden">
+            <h1 class="text-xl font-bold"><span class="text-primary">Clip</span><span class="text-white">Forge</span></h1>
+            <span class="badge badge-primary text-xs">v2.0</span>
+        </div>
+
+        <!-- ==================== VIEW: MEUS VÍDEOS ==================== -->
+        <div id="view-videos" class="view-section animate-fade-in">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Meus Vídeos</h2>
+                    <p class="text-sm text-gray-400">Selecione os vídeos que deseja usar</p>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="document.getElementById('videoFileInput').click()" class="btn btn-primary btn-sm flex-1 md:flex-none">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Adicionar
+                    </button>
+                    <input type="file" id="videoFileInput" multiple accept="video/*" class="hidden" onchange="addVideosFromDevice(event)">
+                    <button onclick="selectAllVideos()" class="btn btn-outline btn-sm">
+                        <i data-lucide="check-square" class="w-4 h-4"></i> Todos
+                    </button>
+                    <button onclick="deselectAllVideos()" class="btn btn-outline btn-sm">
+                        <i data-lucide="square" class="w-4 h-4"></i> Limpar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barra de info -->
+            <div class="flex items-center justify-between mb-4 p-3 bg-dark-card rounded-xl border border-dark-border">
+                <span class="text-sm text-gray-400">
+                    <span id="total-videos-count" class="text-white font-semibold">0</span> vídeos carregados
+                </span>
+                <span class="badge badge-primary">
+                    <span id="selected-videos-count">0</span> selecionados
+                </span>
+            </div>
+
+            <!-- Grid de vídeos -->
+            <div id="videos-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div class="col-span-full text-center py-16">
+                    <div class="w-20 h-20 bg-dark-card rounded-full flex items-center justify-center mx-auto mb-4 border border-dark-border">
+                        <i data-lucide="video-off" class="w-10 h-10 text-gray-600"></i>
+                    </div>
+                    <p class="text-gray-400 font-medium mb-1">Nenhum vídeo carregado</p>
+                    <p class="text-gray-600 text-sm mb-4">Toque no botão "Adicionar" para começar</p>
+                    <button onclick="document.getElementById('videoFileInput').click()" class="btn btn-primary mx-auto" style="max-width: 250px;">
+                        <i data-lucide="upload" class="w-5 h-5"></i> Selecionar Vídeos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW: TEMPLATES ==================== -->
+        <div id="view-templates" class="view-section hidden">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-white">Templates</h2>
+                <p class="text-sm text-gray-400">Crie e gerencie seus templates de corte</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <!-- Preview -->
+                <div class="card">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="eye" class="w-4 h-4 text-primary"></i> Preview
+                    </h3>
+                    <div class="corte-template" id="corte-template">
+                        <div class="corte-header" id="corte-header-bg">
+                            <div class="flex items-center justify-center gap-3 mb-3">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%238B5CF6'/%3E%3Ctext x='20' y='25' text-anchor='middle' fill='white' font-size='16'%3E👤%3C/text%3E%3C/svg%3E" class="w-10 h-10 rounded-full border-2 border-primary object-cover" id="corte-profile-pic">
+                                <div class="text-left">
+                                    <p class="font-bold text-gray-900 text-base" id="corte-username">@SeuPerfil</p>
+                                    <p class="text-xs text-gray-500" id="corte-subtitle">Canal de Cortes</p>
+                                </div>
+                            </div>
+                            <h2 class="text-lg font-bold text-gray-900" id="corte-title">Título do Vídeo 🔥</h2>
+                        </div>
+                        <div class="corte-video-area">
+                            <div class="w-full h-full flex items-center justify-center text-gray-600 bg-gray-900">
+                                <div class="text-center">
+                                    <i data-lucide="video" class="w-10 h-10 mx-auto mb-1 opacity-50"></i>
+                                    <p class="text-xs">Preview</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuração -->
+                <div class="card">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="settings" class="w-4 h-4 text-primary"></i> Configurar
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Nome do Template</label>
+                            <input type="text" id="template-name" value="Meu Template">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Foto de Perfil</label>
+                            <input type="file" accept="image/*" onchange="updateProfilePic(event)" class="w-full text-xs text-gray-400">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">@ do Perfil</label>
+                            <input type="text" id="config-username" value="@SeuPerfil" oninput="updatePreviewLive()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Subtítulo</label>
+                            <input type="text" id="config-subtitle" value="Canal de Cortes" oninput="updatePreviewLive()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Título do Vídeo</label>
+                            <input type="text" id="config-title" value="Título do Vídeo 🔥" oninput="updatePreviewLive()">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Cor do Fundo</label>
+                            <input type="color" value="#FFFFFF" onchange="document.getElementById('corte-header-bg').style.background = this.value">
+                        </div>
+                        <button onclick="saveTemplate()" class="btn btn-primary mt-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> Salvar Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates Salvos -->
+            <div class="card">
+                <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <i data-lucide="folder-open" class="w-4 h-4 text-yellow-400"></i> Templates Salvos
+                </h3>
+                <div id="saved-templates-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <p class="text-gray-500 col-span-full text-center py-6 text-sm">Nenhum template salvo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW: RENDERIZAR ==================== -->
+        <div id="view-render" class="view-section hidden">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-white">Renderizar Vídeos</h2>
+                <p class="text-sm text-gray-400">Aplique templates aos vídeos selecionados</p>
+            </div>
+
+            <!-- Passo 1: Template -->
+            <div class="card">
+                <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">1</span>
+                    Escolha um Template
+                </h3>
+                <div id="render-template-list" class="space-y-2 max-h-60 overflow-y-auto">
+                    <p class="text-gray-500 text-center py-4 text-sm">Nenhum template salvo. Crie um template primeiro!</p>
+                </div>
+            </div>
+
+            <!-- Passo 2: Vídeos -->
+            <div class="card">
+                <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">2</span>
+                    Vídeos Selecionados
+                </h3>
+                <div id="render-video-list" class="space-y-2 max-h-60 overflow-y-auto">
+                    <p class="text-gray-500 text-center py-4 text-sm">Nenhum vídeo selecionado. Vá em "Meus Vídeos" e selecione.</p>
+                </div>
+            </div>
+
+            <!-- Botão Renderizar -->
+            <button onclick="startRenderProcess()" id="start-render-btn" class="btn btn-primary mt-4 text-lg py-4" disabled>
+                <i data-lucide="clapperboard" class="w-6 h-6"></i> Renderizar Vídeos
+            </button>
+
+            <!-- Preview da renderização -->
+            <div id="render-preview-container" class="hidden mt-4">
+                <div class="card">
+                    <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="play" class="w-4 h-4 text-green-400"></i> Preview
+                    </h3>
+                    <div class="flex justify-center">
+                        <div class="corte-template" id="render-preview-template">
+                            <div class="corte-header" id="render-preview-header">
+                                <div class="flex items-center justify-center gap-3 mb-3">
+                                    <img src="" class="w-10 h-10 rounded-full border-2 border-primary object-cover" id="render-preview-pic">
+                                    <div class="text-left">
+                                        <p class="font-bold text-gray-900 text-base" id="render-preview-username"></p>
+                                        <p class="text-xs text-gray-500" id="render-preview-subtitle"></p>
+                                    </div>
+                                </div>
+                                <h2 class="text-lg font-bold text-gray-900" id="render-preview-title"></h2>
+                            </div>
+                            <div class="corte-video-area">
+                                <video id="render-preview-video" controls loop playsinline class="w-full h-full object-cover"></video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progresso -->
+            <div id="render-progress-container" class="hidden mt-4">
+                <div class="card">
+                    <h3 class="text-sm font-semibold mb-3">Processando...</h3>
+                    <div id="render-progress-list" class="space-y-3"></div>
+                    <button onclick="downloadAllRendered()" id="download-all-btn" class="btn btn-success mt-4 hidden">
+                        <i data-lucide="download" class="w-5 h-5"></i> Baixar Todos os Vídeos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Mobile -->
+    <nav class="bottom-nav mobile-only">
+        <button onclick="switchTab('videos')" id="nav-mobile-videos" class="active">
+            <i data-lucide="video"></i>
+            <span>Vídeos</span>
         </button>
+        <button onclick="switchTab('templates')" id="nav-mobile-templates">
+            <i data-lucide="layout-template"></i>
+            <span>Templates</span>
+        </button>
+        <button onclick="switchTab('render')" id="nav-mobile-render">
+            <i data-lucide="clapperboard"></i>
+            <span>Renderizar</span>
+        </button>
+    </nav>
+</div>
 
-        <!-- Overlay mobile -->
-        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" onclick="closeSidebar()"></div>
+<script>
+    // ===== ESTADO GLOBAL =====
+    let userVideos = [];
+    let selectedVideoIds = [];
+    let selectedTemplateId = null;
+    let renderedVideos = [];
 
-        <!-- Sidebar -->
-        <aside id="sidebar" class="w-64 h-screen bg-dark-card border-r border-dark-border fixed left-0 top-0 z-40 flex-col hidden md:flex sidebar-desktop">
-            <div class="p-6 border-b border-dark-border">
-                <h1 class="text-2xl font-bold tracking-tight">
-                    <span class="text-primary">Clip</span><span class="text-white">Forge</span>
-                </h1>
-                <p class="text-xs text-gray-500 mt-1">Automação de Cortes</p>
-            </div>
-            
-            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 bg-primary/10 text-primary border border-primary/20">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span>Dashboard</span>
-                </button>
-                <button onclick="switchTab('videos')" id="nav-videos" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
-                    <i data-lucide="video" class="w-5 h-5"></i><span>Meus Vídeos</span>
-                </button>
-                <button onclick="switchTab('templates')" id="nav-templates" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
-                    <i data-lucide="scissors" class="w-5 h-5"></i><span>Templates</span>
-                </button>
-                <button onclick="switchTab('render')" id="nav-render" class="nav-btn w-full text-left px-4 py-3 rounded-lg flex items-center space-x-3 text-gray-400">
-                    <i data-lucide="clapperboard" class="w-5 h-5"></i><span>Renderizar</span>
-                </button>
-            </nav>
-        </aside>
+    // ===== INICIALIZAÇÃO =====
+    function init() {
+        // Carregar vídeos salvos
+        loadUserVideos();
+        
+        // Carregar seleções
+        selectedVideoIds = JSON.parse(localStorage.getItem('cf_selected_videos') || '[]');
+        selectedTemplateId = localStorage.getItem('cf_selected_template') || null;
+        
+        // Carregar templates
+        loadTemplatesList();
+        
+        // Atualizar preview
+        updatePreviewLive();
+        updateAllNavButtons('videos');
+        
+        console.log('✅ ClipForge iniciado!');
+        console.log('📁 Vídeos carregados:', userVideos.length);
+        console.log('🎨 Templates:', JSON.parse(localStorage.getItem('cf_templates') || '[]').length);
+    }
 
-        <!-- Main Content -->
-        <main class="flex-1 md:ml-64 p-4 md:p-8 main-mobile" onclick="closeSidebar()">
-            
-            <!-- Dashboard -->
-            <div id="view-dashboard" class="view-section animate-fade-in">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-2">Dashboard</h2>
-                    <p class="text-gray-400">Visão geral dos seus vídeos e templates</p>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
-                        <p class="text-xs text-gray-400 mb-1">Vídeos Carregados</p>
-                        <p class="text-2xl font-bold text-white" id="stat-videos">0</p>
-                    </div>
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
-                        <p class="text-xs text-gray-400 mb-1">Templates</p>
-                        <p class="text-2xl font-bold text-white" id="stat-templates">0</p>
-                    </div>
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-5">
-                        <p class="text-xs text-gray-400 mb-1">Renderizados</p>
-                        <p class="text-2xl font-bold text-white" id="stat-rendered">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Meus Vídeos -->
-            <div id="view-videos" class="view-section hidden">
-                <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                        <h2 class="text-3xl font-bold text-white mb-2">Meus Vídeos</h2>
-                        <p class="text-gray-400">Selecione vídeos do seu celular para usar nos templates</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="document.getElementById('videoFileInput').click()" class="px-4 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-semibold transition-all flex items-center gap-2">
-                            <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Vídeos
-                        </button>
-                        <input type="file" id="videoFileInput" multiple accept="video/*" class="hidden" onchange="addVideosFromDevice(event)">
-                        <button onclick="selectAllVideos()" class="px-4 py-3 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
-                            Selecionar Todos
-                        </button>
-                        <button onclick="deselectAllVideos()" class="px-4 py-3 bg-gray-700 text-white rounded-lg text-sm hover:bg-gray-600 transition-all">
-                            Limpar
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="videos-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <div class="col-span-full text-center py-12">
-                        <i data-lucide="upload-cloud" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
-                        <p class="text-gray-500 text-lg mb-2">Nenhum vídeo carregado</p>
-                        <p class="text-gray-600 text-sm mb-4">Clique em "Adicionar Vídeos" para selecionar vídeos do seu celular</p>
-                        <button onclick="document.getElementById('videoFileInput').click()" class="px-6 py-3 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-all font-semibold">
-                            📁 Selecionar Vídeos
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="mt-4 text-sm text-gray-400">
-                    <span id="selected-count">0</span> vídeos selecionados
-                </div>
-            </div>
-
-            <!-- Templates -->
-            <div id="view-templates" class="view-section hidden">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-2">Templates</h2>
-                    <p class="text-gray-400">Crie e gerencie templates para seus cortes</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    <!-- Preview -->
-                    <div class="lg:col-span-2">
-                        <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                            <h3 class="text-lg font-semibold mb-4">Preview do Template</h3>
-                            <div class="corte-template" id="corte-template">
-                                <div class="corte-header" id="corte-header-bg">
-                                    <div class="flex items-center justify-center gap-3 mb-3">
-                                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Ccircle cx='24' cy='24' r='24' fill='%238B5CF6'/%3E%3Ctext x='24' y='28' text-anchor='middle' fill='white' font-size='20'%3E👤%3C/text%3E%3C/svg%3E" class="w-12 h-12 rounded-full border-2 border-primary object-cover" id="corte-profile-pic">
-                                        <div class="text-left">
-                                            <p class="font-bold text-gray-900 text-lg" id="corte-username">@SeuPerfil</p>
-                                            <p class="text-xs text-gray-500" id="corte-subtitle">Canal de Cortes</p>
-                                        </div>
-                                    </div>
-                                    <h2 class="text-xl font-bold text-gray-900" id="corte-title">Título do Vídeo 🔥</h2>
-                                </div>
-                                <div class="corte-video-area">
-                                    <div class="placeholder">
-                                        <div class="text-center">
-                                            <i data-lucide="video" class="w-12 h-12 mx-auto mb-2 opacity-50"></i>
-                                            <p class="text-sm">Preview do vídeo</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Configuração -->
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">Configurar Template</h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="text-xs text-gray-400">Nome do Template</label>
-                                <input type="text" id="template-name" value="Template Padrão" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400">Foto de Perfil</label>
-                                <input type="file" accept="image/*" onchange="updateProfilePic(event)" class="w-full text-xs text-gray-400 mt-1">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400">@ do Perfil</label>
-                                <input type="text" id="config-username" value="@SeuPerfil" oninput="updatePreviewLive()" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400">Subtítulo</label>
-                                <input type="text" id="config-subtitle" value="Canal de Cortes" oninput="updatePreviewLive()" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400">Título do Vídeo</label>
-                                <input type="text" id="config-title" value="Título do Vídeo 🔥" oninput="updatePreviewLive()" class="w-full bg-[#0A0A0B] border border-gray-700 rounded-lg p-2.5 text-white text-sm">
-                            </div>
-                            <div>
-                                <label class="text-xs text-gray-400">Cor do Fundo</label>
-                                <input type="color" value="#FFFFFF" onchange="document.getElementById('corte-header-bg').style.background = this.value" class="w-full h-10 rounded-lg border border-gray-700 cursor-pointer">
-                            </div>
-                            <button onclick="saveTemplate()" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-all mt-4">
-                                💾 Salvar Template
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Templates Salvos -->
-                <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                    <h3 class="text-lg font-semibold mb-4">Templates Salvos</h3>
-                    <div id="saved-templates-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <p class="text-gray-500 col-span-full text-center py-4">Nenhum template salvo ainda</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Renderizar -->
-            <div id="view-render" class="view-section hidden">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-white mb-2">Renderizar Vídeos</h2>
-                    <p class="text-gray-400">Aplique o template selecionado aos vídeos escolhidos</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <!-- Selecionar Template -->
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">1. Escolha um Template</h3>
-                        <div id="render-template-list" class="space-y-2 max-h-80 overflow-y-auto">
-                            <p class="text-gray-500 text-center py-4">Nenhum template salvo</p>
-                        </div>
-                    </div>
-
-                    <!-- Vídeos Selecionados -->
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">2. Vídeos Selecionados</h3>
-                        <div id="render-video-list" class="space-y-2 max-h-80 overflow-y-auto">
-                            <p class="text-gray-500 text-center py-4">Nenhum vídeo selecionado</p>
-                        </div>
-                        
-                        <button onclick="startRenderProcess()" id="start-render-btn" class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed transition-all" disabled>
-                            <i data-lucide="clapperboard" class="w-5 h-5 inline mr-2"></i>Renderizar Todos os Vídeos
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Preview da Renderização -->
-                <div id="render-preview-container" class="hidden">
-                    <div class="bg-dark-card border border-dark-border rounded-xl p-6">
-                        <h3 class="text-lg font-semibold mb-4">Preview da Renderização</h3>
-                        <div class="flex justify-center">
-                            <div class="corte-template" id="render-preview-template">
-                                <div class="corte-header" id="render-preview-header">
-                                    <div class="flex items-center justify-center gap-3 mb-3">
-                                        <img src="" class="w-12 h-12 rounded-full border-2 border-primary object-cover" id="render-preview-pic">
-                                        <div class="text-left">
-                                            <p class="font-bold text-gray-900 text-lg" id="render-preview-username"></p>
-                                            <p class="text-xs text-gray-500" id="render-preview-subtitle"></p>
-                                        </div>
-                                    </div>
-                                    <h2 class="text-xl font-bold text-gray-900" id="render-preview-title"></h2>
-                                </div>
-                                <div class="corte-video-area">
-                                    <video id="render-preview-video" controls muted loop class="w-full h-full object-cover"></video>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        // ===== ESTADO GLOBAL =====
-        let userVideos = []; // Vídeos carregados pelo usuário
-        let selectedVideoIds = []; // IDs dos vídeos selecionados
-        let selectedTemplateId = null; // ID do template selecionado para render
-
-        // ===== INICIALIZAÇÃO =====
-        function init() {
-            loadUserVideos();
-            loadTemplates();
-            updateDashboard();
+    // ===== NAVEGAÇÃO =====
+    function switchTab(tab) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+        const view = document.getElementById('view-' + tab);
+        if (view) view.classList.remove('hidden');
+        
+        updateAllNavButtons(tab);
+        
+        if (tab === 'videos') loadUserVideos();
+        if (tab === 'templates') {
+            loadTemplatesList();
             updatePreviewLive();
-            
-            // Carregar seleções salvas
-            selectedVideoIds = JSON.parse(localStorage.getItem('cf_selected_videos') || '[]');
-            selectedTemplateId = localStorage.getItem('cf_selected_template') || null;
         }
+        if (tab === 'render') loadRenderPage();
+        
+        lucide.createIcons();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-        // ===== NAVEGAÇÃO =====
-        function switchTab(tab) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-            const view = document.getElementById('view-' + tab);
-            if (view) view.classList.remove('hidden');
+    function updateAllNavButtons(activeTab) {
+        ['videos', 'templates', 'render'].forEach(tab => {
+            const mobileBtn = document.getElementById('nav-mobile-' + tab);
+            const desktopBtn = document.getElementById('nav-desktop-' + tab);
             
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.classList.remove('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
-                b.classList.add('text-gray-400');
-            });
-            
-            const btn = document.getElementById('nav-' + tab);
-            if (btn) {
-                btn.classList.add('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
-                btn.classList.remove('text-gray-400');
+            if (mobileBtn) {
+                mobileBtn.classList.toggle('active', tab === activeTab);
             }
-            
-            if (tab === 'videos') loadUserVideos();
-            if (tab === 'templates') loadTemplates();
-            if (tab === 'render') loadRenderPage();
-            if (tab === 'dashboard') updateDashboard();
-            
-            closeSidebar();
-            lucide.createIcons();
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('sidebar-mobile-show');
-            overlay.classList.toggle('hidden');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('sidebar-mobile-show');
-            document.getElementById('sidebar-overlay').classList.add('hidden');
-        }
-
-        // ===== VÍDEOS DO USUÁRIO =====
-        function addVideosFromDevice(event) {
-            const files = Array.from(event.target.files);
-            if (!files.length) return;
-            
-            files.forEach(file => {
-                const videoUrl = URL.createObjectURL(file);
-                const videoId = 'video_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                
-                userVideos.push({
-                    id: videoId,
-                    name: file.name,
-                    size: file.size,
-                    url: videoUrl,
-                    file: file,
-                    date: new Date().toISOString()
-                });
-            });
-            
-            saveUserVideos();
-            loadUserVideos();
-            updateDashboard();
-            
-            // Limpar input para permitir selecionar os mesmos arquivos novamente
-            event.target.value = '';
-        }
-
-        function saveUserVideos() {
-            // Não podemos salvar os blobs no localStorage, salvamos apenas metadados
-            const metadata = userVideos.map(v => ({
-                id: v.id,
-                name: v.name,
-                size: v.size,
-                date: v.date
-            }));
-            localStorage.setItem('cf_user_videos_meta', JSON.stringify(metadata));
-        }
-
-        function loadUserVideos() {
-            const grid = document.getElementById('videos-grid');
-            if (!grid) return;
-            
-            if (!userVideos.length) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-12">
-                        <i data-lucide="upload-cloud" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
-                        <p class="text-gray-500 text-lg mb-2">Nenhum vídeo carregado</p>
-                        <p class="text-gray-600 text-sm mb-4">Clique em "Adicionar Vídeos" para selecionar vídeos do seu celular</p>
-                        <button onclick="document.getElementById('videoFileInput').click()" class="px-6 py-3 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-all font-semibold">
-                            📁 Selecionar Vídeos
-                        </button>
-                    </div>`;
-            } else {
-                grid.innerHTML = userVideos.map(v => {
-                    const isSelected = selectedVideoIds.includes(v.id);
-                    return `
-                        <div class="video-card bg-dark-card rounded-xl overflow-hidden relative ${isSelected ? 'selected' : ''}" 
-                             onclick="toggleVideoSelection('${v.id}', this)" data-id="${v.id}">
-                            <div class="aspect-[9/16] bg-gray-900 relative">
-                                <video src="${v.url}" class="w-full h-full object-cover" muted preload="metadata"></video>
-                                ${isSelected ? '<div class="check-badge">✓</div>' : ''}
-                            </div>
-                            <div class="p-2">
-                                <p class="text-xs text-white truncate">${v.name}</p>
-                                <p class="text-xs text-gray-500">${formatSize(v.size)}</p>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-                // Tocar vídeos quando visíveis
-                document.querySelectorAll('#videos-grid video').forEach(video => {
-                    video.addEventListener('mouseenter', () => video.play());
-                    video.addEventListener('mouseleave', () => video.pause());
-                    // Para mobile, usar touch
-                    video.addEventListener('touchstart', () => video.play());
-                });
-            }
-            
-            updateSelectedCount();
-            lucide.createIcons();
-        }
-
-        function toggleVideoSelection(videoId, element) {
-            if (selectedVideoIds.includes(videoId)) {
-                selectedVideoIds = selectedVideoIds.filter(id => id !== videoId);
-                element.classList.remove('selected');
-                const badge = element.querySelector('.check-badge');
-                if (badge) badge.remove();
-            } else {
-                selectedVideoIds.push(videoId);
-                element.classList.add('selected');
-                // Adicionar badge
-                if (!element.querySelector('.check-badge')) {
-                    const badge = document.createElement('div');
-                    badge.className = 'check-badge';
-                    badge.textContent = '✓';
-                    element.querySelector('.relative').appendChild(badge);
-                }
-            }
-            
-            localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
-            updateSelectedCount();
-        }
-
-        function selectAllVideos() {
-            selectedVideoIds = userVideos.map(v => v.id);
-            localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
-            loadUserVideos();
-        }
-
-        function deselectAllVideos() {
-            selectedVideoIds = [];
-            localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
-            loadUserVideos();
-        }
-
-        function updateSelectedCount() {
-            const countEl = document.getElementById('selected-count');
-            if (countEl) {
-                countEl.textContent = selectedVideoIds.length;
-            }
-        }
-
-        function formatSize(bytes) {
-            if (!bytes) return '0 MB';
-            const mb = bytes / (1024 * 1024);
-            return mb >= 1 ? mb.toFixed(1) + ' MB' : (bytes / 1024).toFixed(0) + ' KB';
-        }
-
-        // ===== TEMPLATES =====
-        function updateProfilePic(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                document.getElementById('corte-profile-pic').src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function updatePreviewLive() {
-            document.getElementById('corte-username').textContent = document.getElementById('config-username').value || '@SeuPerfil';
-            document.getElementById('corte-subtitle').textContent = document.getElementById('config-subtitle').value || 'Canal';
-            document.getElementById('corte-title').textContent = document.getElementById('config-title').value || 'Título';
-        }
-
-        function saveTemplate() {
-            const template = {
-                id: Date.now(),
-                name: document.getElementById('template-name').value || 'Template',
-                username: document.getElementById('config-username').value,
-                subtitle: document.getElementById('config-subtitle').value,
-                title: document.getElementById('config-title').value,
-                profilePic: document.getElementById('corte-profile-pic').src,
-                headerBg: document.getElementById('corte-header-bg').style.background || '#FFFFFF',
-                date: new Date().toISOString()
-            };
-            
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            templates.unshift(template);
-            localStorage.setItem('cf_templates', JSON.stringify(templates.slice(0, 50)));
-            
-            loadTemplates();
-            updateDashboard();
-            alert('✅ Template "' + template.name + '" salvo com sucesso!');
-        }
-
-        function loadTemplates() {
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const grid = document.getElementById('saved-templates-grid');
-            
-            if (grid) {
-                if (!templates.length) {
-                    grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-4">Nenhum template salvo ainda</p>';
+            if (desktopBtn) {
+                if (tab === activeTab) {
+                    desktopBtn.classList.add('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
+                    desktopBtn.classList.remove('text-gray-400');
                 } else {
-                    grid.innerHTML = templates.map(t => `
-                        <div class="bg-dark-card border border-dark-border rounded-xl p-4 template-card">
-                            <div class="flex items-center gap-2 mb-2">
-                                <img src="${t.profilePic || ''}" class="w-8 h-8 rounded-full object-cover" onerror="this.style.display='none'">
-                                <div>
-                                    <p class="text-sm font-semibold text-white">${t.name}</p>
-                                    <p class="text-xs text-gray-400">${t.username}</p>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-500 truncate">${t.title}</p>
-                            <div class="flex gap-2 mt-2">
-                                <button onclick="editTemplate('${t.id}')" class="text-xs text-primary hover:underline">Editar</button>
-                                <button onclick="deleteTemplate('${t.id}')" class="text-xs text-red-400 hover:underline">Excluir</button>
-                            </div>
-                        </div>
-                    `).join('');
+                    desktopBtn.classList.remove('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
+                    desktopBtn.classList.add('text-gray-400');
                 }
             }
-        }
+        });
+    }
 
-        function editTemplate(id) {
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const t = templates.find(t => t.id == id);
-            if (!t) return;
-            
-            document.getElementById('template-name').value = t.name || '';
-            document.getElementById('config-username').value = t.username || '';
-            document.getElementById('config-subtitle').value = t.subtitle || '';
-            document.getElementById('config-title').value = t.title || '';
-            if (t.profilePic) document.getElementById('corte-profile-pic').src = t.profilePic;
-            if (t.headerBg) document.getElementById('corte-header-bg').style.background = t.headerBg;
-            updatePreviewLive();
-            switchTab('templates');
-        }
-
-        function deleteTemplate(id) {
-            if (confirm('Excluir este template?')) {
-                const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-                localStorage.setItem('cf_templates', JSON.stringify(templates.filter(t => t.id != id)));
-                loadTemplates();
-                updateDashboard();
-            }
-        }
-
-        // ===== RENDERIZAÇÃO =====
-        function loadRenderPage() {
-            // Carregar templates disponíveis
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const templateList = document.getElementById('render-template-list');
-            
-            if (templateList) {
-                if (!templates.length) {
-                    templateList.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum template salvo. Crie templates primeiro!</p>';
-                } else {
-                    templateList.innerHTML = templates.map(t => `
-                        <div class="template-card p-3 rounded-lg cursor-pointer ${selectedTemplateId == t.id ? 'selected' : 'border-dark-border bg-[#0A0A0B]'}"
-                             onclick="selectTemplateForRender('${t.id}', this)">
-                            <div class="flex items-center gap-2 mb-1">
-                                <img src="${t.profilePic || ''}" class="w-6 h-6 rounded-full object-cover" onerror="this.style.display='none'">
-                                <p class="text-sm font-semibold text-white">${t.name}</p>
-                            </div>
-                            <p class="text-xs text-gray-400">${t.username} • ${t.title}</p>
-                        </div>
-                    `).join('');
-                }
-            }
-            
-            // Carregar vídeos selecionados
-            updateRenderVideoList();
-            updateRenderButton();
-        }
-
-        function selectTemplateForRender(id, element) {
-            document.querySelectorAll('#render-template-list .template-card').forEach(c => c.classList.remove('selected', 'bg-primary/10'));
-            selectedTemplateId = id;
-            element.classList.add('selected', 'bg-primary/10');
-            localStorage.setItem('cf_selected_template', id);
-            updateRenderButton();
-        }
-
-        function updateRenderVideoList() {
-            const list = document.getElementById('render-video-list');
-            if (!list) return;
-            
-            const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
-            
-            if (!selectedVideos.length) {
-                list.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum vídeo selecionado. Vá em "Meus Vídeos" e selecione os vídeos.</p>';
-            } else {
-                list.innerHTML = selectedVideos.map(v => `
-                    <div class="flex items-center justify-between p-2 bg-[#0A0A0B] rounded-lg text-sm">
-                        <div class="flex items-center gap-2 flex-1 min-w-0">
-                            <i data-lucide="file-video" class="w-4 h-4 text-primary flex-shrink-0"></i>
-                            <span class="text-white truncate">${v.name}</span>
-                        </div>
-                        <span class="text-xs text-gray-500 flex-shrink-0 ml-2">${formatSize(v.size)}</span>
-                    </div>
-                `).join('');
-            }
-            
-            lucide.createIcons();
-        }
-
-        function updateRenderButton() {
-            const btn = document.getElementById('start-render-btn');
-            if (btn) {
-                const hasVideos = selectedVideoIds.length > 0;
-                const hasTemplate = selectedTemplateId !== null;
-                btn.disabled = !(hasVideos && hasTemplate);
-            }
-        }
-
-        function startRenderProcess() {
-            const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const template = templates.find(t => t.id == selectedTemplateId);
-            
-            if (!selectedVideos.length || !template) {
-                alert('Selecione vídeos e um template!');
+    // ===== VÍDEOS =====
+    function addVideosFromDevice(event) {
+        const files = Array.from(event.target.files);
+        if (!files.length) return;
+        
+        files.forEach(file => {
+            if (!file.type.startsWith('video/')) {
+                alert('⚠️ ' + file.name + ' não é um vídeo!');
                 return;
             }
             
-            // Mostrar preview com o primeiro vídeo
-            showRenderPreview(selectedVideos[0], template);
-            
-            // Processar todos os vídeos
-            processAllVideos(selectedVideos, template);
-        }
-
-        function showRenderPreview(video, template) {
-            const container = document.getElementById('render-preview-container');
-            container.classList.remove('hidden');
-            
-            // Atualizar template no preview
-            document.getElementById('render-preview-header').style.background = template.headerBg || '#FFFFFF';
-            document.getElementById('render-preview-pic').src = template.profilePic || '';
-            document.getElementById('render-preview-username').textContent = template.username || '@Perfil';
-            document.getElementById('render-preview-subtitle').textContent = template.subtitle || '';
-            document.getElementById('render-preview-title').textContent = template.title || '';
-            
-            // Colocar vídeo
-            const videoEl = document.getElementById('render-preview-video');
-            videoEl.src = video.url;
-            videoEl.play();
-            
-            // Scroll para o preview
-            container.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        async function processAllVideos(videos, template) {
-            // Simular processamento
-            for (let i = 0; i < videos.length; i++) {
-                // Na versão real, aqui usaria FFmpeg para aplicar o template
-                console.log(`Processando vídeo ${i + 1}/${videos.length}: ${videos[i].name}`);
-                await sleep(500);
-            }
-            
-            // Salvar no histórico
-            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
-            renders.unshift({
-                id: Date.now(),
-                count: videos.length,
-                templateName: template.name,
+            const videoUrl = URL.createObjectURL(file);
+            userVideos.push({
+                id: 'vid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                name: file.name,
+                size: file.size,
+                url: videoUrl,
+                file: file,
                 date: new Date().toISOString()
             });
-            localStorage.setItem('cf_renders', JSON.stringify(renders.slice(0, 100)));
-            
-            updateDashboard();
-            
-            alert(`✅ ${videos.length} vídeos processados com sucesso!\n\nTemplate aplicado: ${template.name}\n\nOs vídeos foram enquadrados automaticamente no template.`);
-        }
-
-        // ===== DASHBOARD =====
-        function updateDashboard() {
-            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-            const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
-            
-            document.getElementById('stat-videos').textContent = userVideos.length;
-            document.getElementById('stat-templates').textContent = templates.length;
-            document.getElementById('stat-rendered').textContent = renders.length;
-        }
-
-        // ===== UTILITÁRIOS =====
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        // ===== INICIAR =====
-        init();
-        lucide.createIcons();
+        });
         
-        console.log('🚀 ClipForge iniciado!');
-        console.log('📁 Adicione vídeos do seu celular');
-        console.log('🎨 Crie templates personalizados');
-        console.log('🎬 Renderize vídeos com templates');
-    </script>
+        saveVideosMetadata();
+        loadUserVideos();
+        event.target.value = '';
+        
+        console.log('✅ Vídeos adicionados! Total:', userVideos.length);
+    }
+
+    function saveVideosMetadata() {
+        const meta = userVideos.map(v => ({ 
+            id: v.id, 
+            name: v.name, 
+            size: v.size, 
+            date: v.date 
+        }));
+        localStorage.setItem('cf_videos_meta', JSON.stringify(meta));
+    }
+
+    function loadUserVideos() {
+        const grid = document.getElementById('videos-grid');
+        if (!grid) return;
+        
+        const totalCount = document.getElementById('total-videos-count');
+        const selectedCount = document.getElementById('selected-videos-count');
+        
+        if (totalCount) totalCount.textContent = userVideos.length;
+        if (selectedCount) selectedCount.textContent = selectedVideoIds.length;
+        
+        if (!userVideos.length) {
+            grid.innerHTML = `
+                <div class="col-span-full text-center py-16">
+                    <div class="w-20 h-20 bg-dark-card rounded-full flex items-center justify-center mx-auto mb-4 border border-dark-border">
+                        <i data-lucide="video-off" class="w-10 h-10 text-gray-600"></i>
+                    </div>
+                    <p class="text-gray-400 font-medium mb-1">Nenhum vídeo carregado</p>
+                    <p class="text-gray-600 text-sm mb-4">Toque no botão "Adicionar" para começar</p>
+                    <button onclick="document.getElementById('videoFileInput').click()" class="btn btn-primary mx-auto" style="max-width: 250px;">
+                        <i data-lucide="upload" class="w-5 h-5"></i> Selecionar Vídeos
+                    </button>
+                </div>`;
+        } else {
+            grid.innerHTML = userVideos.map(v => {
+                const isSelected = selectedVideoIds.includes(v.id);
+                return `
+                    <div class="video-card ${isSelected ? 'selected' : ''}" onclick="toggleVideo('${v.id}', this)" data-id="${v.id}">
+                        <div class="aspect-[9/16] bg-gray-900 relative">
+                            <video src="${v.url}" class="w-full h-full object-cover" muted preload="metadata" playsinline></video>
+                            <div class="check-overlay">${isSelected ? '✓' : ''}</div>
+                        </div>
+                        <div class="p-2">
+                            <p class="text-xs text-white truncate font-medium">${v.name}</p>
+                            <p class="text-xs text-gray-500">${formatSize(v.size)}</p>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+        
+        lucide.createIcons();
+    }
+
+    function toggleVideo(videoId, element) {
+        if (selectedVideoIds.includes(videoId)) {
+            selectedVideoIds = selectedVideoIds.filter(id => id !== videoId);
+            if (element) {
+                element.classList.remove('selected');
+                const overlay = element.querySelector('.check-overlay');
+                if (overlay) overlay.textContent = '';
+            }
+        } else {
+            selectedVideoIds.push(videoId);
+            if (element) {
+                element.classList.add('selected');
+                const overlay = element.querySelector('.check-overlay');
+                if (overlay) overlay.textContent = '✓';
+            }
+        }
+        
+        localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
+        
+        const selectedCount = document.getElementById('selected-videos-count');
+        if (selectedCount) selectedCount.textContent = selectedVideoIds.length;
+    }
+
+    function selectAllVideos() {
+        selectedVideoIds = userVideos.map(v => v.id);
+        localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
+        loadUserVideos();
+    }
+
+    function deselectAllVideos() {
+        selectedVideoIds = [];
+        localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
+        loadUserVideos();
+    }
+
+    function formatSize(bytes) {
+        if (!bytes) return '0 MB';
+        const mb = bytes / (1024 * 1024);
+        return mb >= 1 ? mb.toFixed(1) + ' MB' : (bytes / 1024).toFixed(0) + ' KB';
+    }
+
+    // ===== TEMPLATES (CORRIGIDO) =====
+    function updateProfilePic(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById('corte-profile-pic');
+            if (img) {
+                img.src = e.target.result;
+                console.log('✅ Foto de perfil atualizada');
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function updatePreviewLive() {
+        const username = document.getElementById('config-username');
+        const subtitle = document.getElementById('config-subtitle');
+        const title = document.getElementById('config-title');
+        
+        const previewUsername = document.getElementById('corte-username');
+        const previewSubtitle = document.getElementById('corte-subtitle');
+        const previewTitle = document.getElementById('corte-title');
+        
+        if (previewUsername && username) previewUsername.textContent = username.value || '@SeuPerfil';
+        if (previewSubtitle && subtitle) previewSubtitle.textContent = subtitle.value || 'Canal de Cortes';
+        if (previewTitle && title) previewTitle.textContent = title.value || 'Título do Vídeo 🔥';
+    }
+
+    function saveTemplate() {
+        const nameInput = document.getElementById('template-name');
+        const usernameInput = document.getElementById('config-username');
+        const subtitleInput = document.getElementById('config-subtitle');
+        const titleInput = document.getElementById('config-title');
+        const profilePic = document.getElementById('corte-profile-pic');
+        const headerBg = document.getElementById('corte-header-bg');
+        
+        if (!nameInput || !usernameInput || !subtitleInput || !titleInput) {
+            alert('❌ Erro: Campos não encontrados!');
+            return;
+        }
+        
+        const template = {
+            id: Date.now(),
+            name: nameInput.value.trim() || 'Template ' + new Date().toLocaleDateString(),
+            username: usernameInput.value.trim() || '@SeuPerfil',
+            subtitle: subtitleInput.value.trim() || 'Canal de Cortes',
+            title: titleInput.value.trim() || 'Título do Vídeo 🔥',
+            profilePic: profilePic ? profilePic.src : '',
+            headerBg: headerBg ? (headerBg.style.background || '#FFFFFF') : '#FFFFFF',
+            date: new Date().toISOString()
+        };
+        
+        console.log('💾 Salvando template:', template);
+        
+        let templates = [];
+        try {
+            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+        } catch(e) {
+            templates = [];
+        }
+        
+        templates.unshift(template);
+        if (templates.length > 50) templates = templates.slice(0, 50);
+        
+        localStorage.setItem('cf_templates', JSON.stringify(templates));
+        
+        console.log('✅ Template salvo! Total:', templates.length);
+        
+        loadTemplatesList();
+        alert('✅ Template "' + template.name + '" salvo com sucesso!');
+    }
+
+    function loadTemplatesList() {
+        const grid = document.getElementById('saved-templates-grid');
+        if (!grid) {
+            console.log('⚠️ Grid de templates não encontrado');
+            return;
+        }
+        
+        let templates = [];
+        try {
+            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+        } catch(e) {
+            templates = [];
+        }
+        
+        console.log('📋 Carregando templates:', templates.length);
+        
+        if (!templates.length) {
+            grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-6 text-sm">Nenhum template salvo ainda</p>';
+        } else {
+            grid.innerHTML = templates.map(t => `
+                <div class="template-card p-3">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="${t.profilePic || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'}" 
+                             class="w-8 h-8 rounded-full object-cover bg-gray-700 flex-shrink-0" 
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-white truncate">${t.name || 'Sem nome'}</p>
+                            <p class="text-xs text-gray-400">${t.username || '@perfil'}</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 truncate mb-2">${t.title || 'Sem título'}</p>
+                    <div class="flex gap-2">
+                        <button onclick="editTemplate(${t.id})" class="btn btn-outline btn-sm flex-1 text-xs">✏️ Editar</button>
+                        <button onclick="deleteTemplate(${t.id})" class="btn btn-danger btn-sm flex-1 text-xs">🗑 Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        const renderTemplateList = document.getElementById('render-template-list');
+        if (renderTemplateList && !document.getElementById('view-render').classList.contains('hidden')) {
+            loadRenderTemplates();
+        }
+    }
+
+    function editTemplate(id) {
+        let templates = [];
+        try {
+            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+        } catch(e) {
+            templates = [];
+        }
+        
+        const t = templates.find(t => t.id == id);
+        if (!t) {
+            alert('❌ Template não encontrado!');
+            return;
+        }
+        
+        console.log('✏️ Editando template:', t.name);
+        
+        const nameInput = document.getElementById('template-name');
+        const usernameInput = document.getElementById('config-username');
+        const subtitleInput = document.getElementById('config-subtitle');
+        const titleInput = document.getElementById('config-title');
+        const profilePic = document.getElementById('corte-profile-pic');
+        const headerBg = document.getElementById('corte-header-bg');
+        
+        if (nameInput) nameInput.value = t.name || '';
+        if (usernameInput) usernameInput.value = t.username || '';
+        if (subtitleInput) subtitleInput.value = t.subtitle || '';
+        if (titleInput) titleInput.value = t.title || '';
+        if (profilePic && t.profilePic) profilePic.src = t.profilePic;
+        if (headerBg && t.headerBg) headerBg.style.background = t.headerBg;
+        
+        updatePreviewLive();
+        switchTab('templates');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteTemplate(id) {
+        if (!confirm('Tem certeza que deseja excluir este template?')) return;
+        
+        let templates = [];
+        try {
+            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+        } catch(e) {
+            templates = [];
+        }
+        
+        templates = templates.filter(t => t.id != id);
+        localStorage.setItem('cf_templates', JSON.stringify(templates));
+        
+        console.log('🗑 Template excluído. Restantes:', templates.length);
+        
+        loadTemplatesList();
+    }
+
+    function loadRenderTemplates() {
+        const templateList = document.getElementById('render-template-list');
+        if (!templateList) return;
+        
+        let templates = [];
+        try {
+            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+        } catch(e) {
+            templates = [];
+        }
+        
+        if (!templates.length) {
+            templateList.innerHTML = '<p class="text-gray-500 text-center py-4 text-sm">Nenhum template salvo. Crie um template primeiro!</p>';
+        } else {
+            templateList.innerHTML = templates.map(t => `
+                <div class="template-card p-3 cursor-pointer ${selectedTemplateId == t.id ? 'selected' : ''}"
+                     onclick="selectTemplateForRender(${t.id}, this)">
+                    <div class="flex items-center gap-2 mb-1">
+                        <img src="${t.profilePic || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2212%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'}" 
+                             class="w-6 h-6 rounded-full object-cover">
+                        <p class="text-sm font-semibold text-white">${t.name}</p>
+                    </div>
+                    <p class="text-xs text-gray-400">${t.username} • ${t.title}</p>
+                </div>
+            `).join('');
+        }
+    }
+
+    // ===== RENDER =====
+    function loadRenderPage() {
+        loadRenderTemplates();
+        updateRenderVideoList();
+        updateRenderButton();
+    }
+
+    function selectTemplateForRender(id, element) {
+        document.querySelectorAll('#render-template-list .template-card').forEach(c => c.classList.remove('selected'));
+        selectedTemplateId = id;
+        if (element) element.classList.add('selected');
+        localStorage.setItem('cf_selected_template', String(id));
+        updateRenderButton();
+    }
+
+    function updateRenderVideoList() {
+        const list = document.getElementById('render-video-list');
+        if (!list) return;
+        
+        const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
+        
+        if (!selectedVideos.length) {
+            list.innerHTML = '<p class="text-gray-500 text-center py-4 text-sm">Nenhum vídeo selecionado. Vá em "Meus Vídeos" e selecione.</p>';
+        } else {
+            list.innerHTML = selectedVideos.map((v, i) => `
+                <div class="flex items-center justify-between p-2 bg-dark rounded-lg text-sm">
+                    <div class="flex items-center gap-2 flex-1 min-w-0">
+                        <span class="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold flex-shrink-0">${i + 1}</span>
+                        <span class="text-white truncate text-sm">${v.name}</span>
+                    </div>
+                    <span class="text-xs text-gray-500 flex-shrink-0 ml-2">${formatSize(v.size)}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    function updateRenderButton() {
+        const btn = document.getElementById('start-render-btn');
+        if (btn) {
+            const canRender = selectedVideoIds.length > 0 && selectedTemplateId !== null;
+            btn.disabled = !canRender;
+        }
+    }
+
+    function startRenderProcess() {
+        const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
+        
+        let templates = [];
+        try {
+            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+        } catch(e) {
+            templates = [];
+        }
+        
+        const template = templates.find(t => t.id == selectedTemplateId);
+        
+        if (!selectedVideos.length) {
+            alert('❌ Selecione pelo menos um vídeo!');
+            return;
+        }
+        
+        if (!template) {
+            alert('❌ Selecione um template!');
+            return;
+        }
+        
+        console.log('🎬 Iniciando renderização:', selectedVideos.length, 'vídeos com template:', template.name);
+        
+        showRenderPreview(selectedVideos[0], template);
+        processAllVideos(selectedVideos, template);
+    }
+
+    function showRenderPreview(video, template) {
+        const container = document.getElementById('render-preview-container');
+        if (!container) return;
+        
+        container.classList.remove('hidden');
+        
+        const header = document.getElementById('render-preview-header');
+        const pic = document.getElementById('render-preview-pic');
+        const username = document.getElementById('render-preview-username');
+        const subtitle = document.getElementById('render-preview-subtitle');
+        const title = document.getElementById('render-preview-title');
+        const videoEl = document.getElementById('render-preview-video');
+        
+        if (header) header.style.background = template.headerBg || '#FFFFFF';
+        if (pic) pic.src = template.profilePic || '';
+        if (username) username.textContent = template.username || '@Perfil';
+        if (subtitle) subtitle.textContent = template.subtitle || '';
+        if (title) title.textContent = template.title || '';
+        
+        if (videoEl && video.url) {
+            videoEl.src = video.url;
+            videoEl.play().catch(() => {});
+        }
+        
+        container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function processAllVideos(videos, template) {
+        const container = document.getElementById('render-progress-container');
+        const list = document.getElementById('render-progress-list');
+        const downloadBtn = document.getElementById('download-all-btn');
+        
+        if (!container || !list) return;
+        
+        container.classList.remove('hidden');
+        if (downloadBtn) downloadBtn.classList.add('hidden');
+        renderedVideos = [];
+        
+        list.innerHTML = videos.map((v, i) => `
+            <div id="render-item-${i}" class="bg-dark rounded-lg p-3 border border-dark-border">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm text-white truncate flex-1">${v.name}</span>
+                    <span class="text-sm text-primary ml-2 render-status">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill render-bar" style="width:0%"></div></div>
+            </div>
+        `).join('');
+        
+        container.scrollIntoView({ behavior: 'smooth' });
+        
+        for (let i = 0; i < videos.length; i++) {
+            await simulateRender(i, videos[i]);
+            renderedVideos.push({
+                name: videos[i].name.replace(/\.[^/.]+$/, "") + '_' + template.name.replace(/\s+/g, '_') + '.mp4',
+                url: videos[i].url,
+                template: template.name
+            });
+        }
+        
+        if (downloadBtn) downloadBtn.classList.remove('hidden');
+        container.scrollIntoView({ behavior: 'smooth' });
+        
+        const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
+        renders.unshift({
+            id: Date.now(),
+            count: videos.length,
+            templateName: template.name,
+            date: new Date().toISOString()
+        });
+        localStorage.setItem('cf_renders', JSON.stringify(renders.slice(0, 100)));
+    }
+
+    async function simulateRender(index, video) {
+        const el = document.getElementById('render-item-' + index);
+        if (!el) return;
+        
+        const bar = el.querySelector('.render-bar');
+        const status = el.querySelector('.render-status');
+        
+        for (let p = 0; p <= 100; p += Math.floor(Math.random() * 8) + 3) {
+            await sleep(60 + Math.random() * 100);
+            const prog = Math.min(p, 100);
+            if (bar) bar.style.width = prog + '%';
+            if (status) status.textContent = prog + '%';
+        }
+        
+        if (status) {
+            status.textContent = '✓ Concluído';
+            status.classList.remove('text-primary');
+            status.classList.add('text-success');
+        }
+    }
+
+    function downloadAllRendered() {
+        if (!renderedVideos.length) {
+            alert('Nenhum vídeo para baixar!');
+            return;
+        }
+        
+        renderedVideos.forEach((v, i) => {
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = v.url;
+                a.download = v.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }, i * 300);
+        });
+        
+        alert('✅ Baixando ' + renderedVideos.length + ' vídeos renderizados!');
+    }
+
+    function sleep(ms) { 
+        return new Promise(r => setTimeout(r, ms)); 
+    }
+
+    // ===== INICIAR =====
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+    lucide.createIcons();
+</script>
 </body>
 </html>
