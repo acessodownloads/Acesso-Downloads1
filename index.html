@@ -4,169 +4,350 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClipForge - Download de Vídeos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0A0A0B; color: #fff; font-family: system-ui; padding: 16px; }
-        .container { max-width: 500px; margin: 0 auto; }
-        h1 { text-align: center; margin: 20px 0; font-size: 28px; }
-        .purple { color: #8B5CF6; }
-        
-        .card { background: #121214; border: 1px solid #1F1F23; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-        .input { width: 100%; background: #0A0A0B; border: 1px solid #1F1F23; border-radius: 12px; padding: 14px; color: #fff; font-size: 16px; margin-bottom: 12px; }
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; }
+        body { background: #0A0A0B; color: #fff; font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; }
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        .btn { padding: 14px 24px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.2s; }
         .btn-primary { background: #8B5CF6; color: #fff; }
+        .btn-primary:active { background: #7C3AED; }
         .btn-success { background: #10B981; color: #fff; }
         .btn-secondary { background: #374151; color: #fff; }
-        
-        .progress-bar { width: 100%; height: 6px; background: #1F1F23; border-radius: 3px; margin: 12px 0; overflow: hidden; }
+        input, select { width: 100%; padding: 14px; background: #0A0A0B; border: 1px solid #1F1F23; color: #fff; border-radius: 12px; font-size: 16px; }
+        input:focus, select:focus { border-color: #8B5CF6; outline: none; }
+        .card { background: #121214; border: 1px solid #1F1F23; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+        .progress-bar { width: 100%; height: 6px; background: #1F1F23; border-radius: 3px; overflow: hidden; }
         .progress-fill { height: 100%; background: #8B5CF6; width: 0%; transition: width 0.3s; }
+        .server-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+        .status-online { background: #10B981; }
+        .status-offline { background: #EF4444; }
         
-        .video-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #0A0A0B; border-radius: 12px; margin-bottom: 8px; }
-        .video-item span { font-size: 14px; }
+        .tab-btn { padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #1F1F23; background: transparent; color: #9CA3AF; transition: all 0.2s; }
+        .tab-btn.active { background: rgba(139, 92, 246, 0.1); color: #8B5CF6; border-color: #8B5CF6; }
         
-        .hidden { display: none; }
-        .text-center { text-align: center; }
-        .text-sm { font-size: 14px; }
-        .text-gray { color: #9CA3AF; }
-        .mb-4 { margin-bottom: 16px; }
+        .corte-template { background: #fff; border-radius: 16px; overflow: hidden; color: #000; max-width: 400px; margin: 0 auto; }
+        .corte-header { padding: 20px; text-align: center; }
+        .corte-video { aspect-ratio: 9/16; background: #000; display: flex; align-items: center; justify-content: center; color: #666; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1><span class="purple">Clip</span>Forge</h1>
-        <p class="text-center text-gray text-sm mb-4">Download de vídeos sem marca d'água</p>
-        
-        <!-- Download -->
-        <div class="card">
-            <input type="text" id="videoUrl" class="input" placeholder="Cole o link do TikTok, Instagram ou YouTube">
-            <button onclick="downloadVideo()" class="btn btn-primary" id="downloadBtn">
-                ⬇️ Baixar Vídeo
-            </button>
-            
-            <div id="progressArea" class="hidden">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <p class="text-sm text-gray" id="progressText">Baixando...</p>
-            </div>
-            
-            <div id="resultArea" class="hidden">
-                <p class="text-sm mb-4" style="color: #10B981;">✅ Download concluído!</p>
-                <button onclick="saveVideo()" class="btn btn-success">💾 Salvar na galeria</button>
+<body class="p-4">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold"><span style="color:#8B5CF6">Clip</span>Forge</h1>
+            <p class="text-gray-400 text-sm mt-1">Download de Vídeos Sem Marca D'água</p>
+        </div>
+
+        <!-- Status do Servidor -->
+        <div class="card text-center mb-4" id="serverStatusCard">
+            <p class="text-sm">
+                <span class="server-status status-offline" id="statusDot"></span>
+                <span id="statusText">Verificando servidor...</span>
+            </p>
+            <p class="text-xs text-gray-500 mt-2" id="serverHelp" style="display:none;">
+                ⚠️ O servidor precisa estar rodando no Termux
+            </p>
+            <div class="mt-3" id="serverConfig" style="display:none;">
+                <label class="text-xs text-gray-400 block mb-1">Endereço do servidor:</label>
+                <input type="text" id="serverUrl" value="http://localhost:3000" class="text-sm" placeholder="http://localhost:3000">
+                <button onclick="changeServer()" class="btn btn-secondary mt-2 text-sm">Conectar</button>
             </div>
         </div>
-        
-        <!-- Vídeos baixados -->
-        <div class="card">
-            <h2 class="mb-4">📂 Vídeos baixados</h2>
-            <div id="videosList">
-                <p class="text-gray text-center text-sm">Carregando...</p>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-4 overflow-x-auto">
+            <button onclick="switchTab('download')" class="tab-btn active flex-1" id="tab-download">📥 Download</button>
+            <button onclick="switchTab('gallery')" class="tab-btn flex-1" id="tab-gallery">📂 Galeria</button>
+            <button onclick="switchTab('template')" class="tab-btn flex-1" id="tab-template">🎨 Template</button>
+        </div>
+
+        <!-- ABA DOWNLOAD -->
+        <div id="view-download" class="animate-fade-in">
+            <div class="card">
+                <label class="text-sm text-gray-300 block mb-2">Link do vídeo:</label>
+                <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/@user/video/123456789">
+                <button onclick="downloadVideo()" class="btn btn-primary mt-3" id="btnDownload">
+                    ⬇️ Baixar Vídeo (Sem Marca D'água)
+                </button>
+                
+                <div id="progressArea" class="hidden mt-4">
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                    <p class="text-sm text-gray-400 mt-2" id="progressText">Iniciando...</p>
+                </div>
+                
+                <div id="resultArea" class="hidden mt-4">
+                    <p class="text-green-400 font-semibold">✅ Download concluído!</p>
+                    <button onclick="saveVideo()" class="btn btn-success mt-2">💾 Salvar Vídeo</button>
+                </div>
+                
+                <div id="errorArea" class="hidden mt-4">
+                    <p class="text-red-400" id="errorText"></p>
+                </div>
             </div>
-            <button onclick="loadVideos()" class="btn btn-secondary mt-4">🔄 Atualizar lista</button>
+        </div>
+
+        <!-- ABA GALERIA -->
+        <div id="view-gallery" class="hidden animate-fade-in">
+            <div class="card">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">Vídeos no Servidor</h2>
+                    <button onclick="loadVideos()" class="text-sm text-primary">🔄 Atualizar</button>
+                </div>
+                <div id="videosList">
+                    <p class="text-gray-500 text-center py-8">Carregando...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA TEMPLATE -->
+        <div id="view-template" class="hidden animate-fade-in">
+            <div class="card">
+                <h2 class="text-lg font-semibold mb-4">Preview do Template</h2>
+                <div class="corte-template" id="corteTemplate">
+                    <div class="corte-header" id="corteHeader" style="background:#fff">
+                        <div class="flex items-center justify-center gap-3 mb-2">
+                            <div style="width:48px;height:48px;background:#8B5CF6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
+                            <div class="text-left">
+                                <p class="font-bold text-lg" id="tplUsername">@SeuPerfil</p>
+                                <p class="text-xs text-gray-500" id="tplSubtitle">Canal de Cortes</p>
+                            </div>
+                        </div>
+                        <h2 class="text-xl font-bold mt-2" id="tplTitle">Título do Vídeo 🔥</h2>
+                    </div>
+                    <div class="corte-video">
+                        <div class="text-center"><p class="text-4xl mb-2">🎬</p><p>Seu vídeo aqui</p></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="text-lg font-semibold mb-4">Configurar</h2>
+                <div class="space-y-3">
+                    <div><label class="text-xs text-gray-400">@ do Perfil</label><input type="text" id="cfgUsername" value="@SeuPerfil" oninput="updateTemplate()"></div>
+                    <div><label class="text-xs text-gray-400">Subtítulo</label><input type="text" id="cfgSubtitle" value="Canal de Cortes" oninput="updateTemplate()"></div>
+                    <div><label class="text-xs text-gray-400">Título</label><input type="text" id="cfgTitle" value="Título do Vídeo 🔥" oninput="updateTemplate()"></div>
+                    <div><label class="text-xs text-gray-400">Cor do Fundo</label><input type="color" id="cfgBgColor" value="#ffffff" onchange="document.getElementById('corteHeader').style.background=this.value"></div>
+                    <button onclick="saveTemplate()" class="btn btn-primary mt-2">💾 Salvar Template</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="text-lg font-semibold mb-4">Templates Salvos</h2>
+                <div id="savedTemplates"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        const API = 'http://localhost:3000/api';
-        let ultimoVideo = null;
+        // ===== CONFIGURAÇÃO =====
+        let API_BASE = localStorage.getItem('cf_server_url') || 'http://localhost:3000';
+        let currentTab = 'download';
+        let lastDownloadedFile = null;
+        let progressInterval = null;
 
-        async function downloadVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
+        // ===== INICIALIZAÇÃO =====
+        function init() {
+            document.getElementById('serverUrl').value = API_BASE;
+            checkServer();
+            switchTab('download');
+            loadTemplates();
             
-            if (!url) {
-                alert('Cole o link do vídeo!');
-                return;
-            }
-            
-            // Mostrar progresso
-            document.getElementById('progressArea').classList.remove('hidden');
-            document.getElementById('resultArea').classList.add('hidden');
-            document.getElementById('downloadBtn').disabled = true;
-            document.getElementById('downloadBtn').textContent = '⏳ Baixando...';
-            
-            // Simular progresso
-            let progress = 0;
-            const progressFill = document.getElementById('progressFill');
-            const progressText = document.getElementById('progressText');
-            
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress > 90) {
-                    progress = 90;
-                    clearInterval(interval);
-                }
-                progressFill.style.width = progress + '%';
-                progressText.textContent = 'Baixando... ' + Math.round(progress) + '%';
-            }, 500);
+            // Verificar servidor a cada 30 segundos
+            setInterval(checkServer, 30000);
+        }
+
+        // ===== VERIFICAÇÃO DO SERVIDOR =====
+        async function checkServer() {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
             
             try {
-                const response = await fetch(API + '/download', {
+                const resp = await fetch(API_BASE + '/api/videos');
+                if (resp.ok) {
+                    statusDot.className = 'server-status status-online';
+                    statusText.textContent = 'Servidor conectado!';
+                    document.getElementById('serverHelp').style.display = 'none';
+                } else {
+                    throw new Error('Offline');
+                }
+            } catch(e) {
+                statusDot.className = 'server-status status-offline';
+                statusText.textContent = 'Servidor offline';
+                document.getElementById('serverHelp').style.display = 'block';
+                document.getElementById('serverConfig').style.display = 'block';
+            }
+        }
+
+        function changeServer() {
+            const newUrl = document.getElementById('serverUrl').value.trim();
+            if (newUrl) {
+                API_BASE = newUrl;
+                localStorage.setItem('cf_server_url', newUrl);
+                checkServer();
+                alert('✅ Servidor alterado!');
+            }
+        }
+
+        // ===== NAVEGAÇÃO =====
+        function switchTab(tab) {
+            document.querySelectorAll('#view-download, #view-gallery, #view-template').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            document.getElementById('tab-' + tab).classList.add('active');
+            currentTab = tab;
+            
+            if (tab === 'gallery') loadVideos();
+            if (tab === 'template') loadTemplates();
+        }
+
+        // ===== DOWNLOAD =====
+        async function downloadVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            if (!url) return alert('Cole o link do vídeo!');
+
+            document.getElementById('progressArea').classList.remove('hidden');
+            document.getElementById('resultArea').classList.add('hidden');
+            document.getElementById('errorArea').classList.add('hidden');
+            document.getElementById('btnDownload').disabled = true;
+            document.getElementById('btnDownload').textContent = '⏳ Baixando...';
+
+            let progress = 0;
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            
+            progressInterval = setInterval(() => {
+                progress += 3;
+                if (progress > 85) { progress = 85; clearInterval(progressInterval); }
+                fill.style.width = progress + '%';
+                text.textContent = 'Baixando... ' + Math.round(progress) + '%';
+            }, 300);
+
+            try {
+                const response = await fetch(API_BASE + '/api/download', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url })
                 });
                 
                 const data = await response.json();
-                
-                clearInterval(interval);
-                progressFill.style.width = '100%';
-                
+                clearInterval(progressInterval);
+
                 if (data.success) {
-                    progressText.textContent = '✅ Concluído!';
-                    ultimoVideo = data.filename;
+                    fill.style.width = '100%';
+                    text.textContent = '✅ Download concluído!';
+                    lastDownloadedFile = data.filename;
                     document.getElementById('resultArea').classList.remove('hidden');
-                    loadVideos();
-                    
-                    // Baixar automaticamente
-                    setTimeout(() => saveVideo(), 1000);
+                    saveDownloadHistory(data.filename, url);
+                    setTimeout(() => saveVideo(), 500);
                 } else {
-                    progressText.textContent = '❌ Erro: ' + (data.error || 'Falha no download');
+                    text.textContent = '❌ ' + (data.error || 'Erro');
+                    document.getElementById('errorText').textContent = data.error;
+                    document.getElementById('errorArea').classList.remove('hidden');
                 }
-            } catch (error) {
-                clearInterval(interval);
-                progressText.textContent = '❌ Erro de conexão. O servidor está rodando?';
-                console.error(error);
+            } catch(e) {
+                clearInterval(progressInterval);
+                text.textContent = '❌ Servidor offline!';
+                document.getElementById('errorText').textContent = 'Abra o Termux e digite: node server.js';
+                document.getElementById('errorArea').classList.remove('hidden');
             }
-            
-            document.getElementById('downloadBtn').disabled = false;
-            document.getElementById('downloadBtn').textContent = '⬇️ Baixar Vídeo';
+
+            document.getElementById('btnDownload').disabled = false;
+            document.getElementById('btnDownload').textContent = '⬇️ Baixar Vídeo';
         }
 
         function saveVideo() {
-            if (ultimoVideo) {
-                window.open(API + '/video/' + ultimoVideo, '_blank');
+            if (lastDownloadedFile) {
+                window.open(API_BASE + '/api/video/' + lastDownloadedFile, '_blank');
             }
         }
 
+        function saveDownloadHistory(filename, url) {
+            const history = JSON.parse(localStorage.getItem('cf_downloads') || '[]');
+            history.unshift({ filename, url, date: new Date().toISOString() });
+            localStorage.setItem('cf_downloads', JSON.stringify(history.slice(0, 50)));
+        }
+
+        // ===== GALERIA =====
         async function loadVideos() {
+            const list = document.getElementById('videosList');
             try {
-                const response = await fetch(API + '/videos');
-                const data = await response.json();
+                const resp = await fetch(API_BASE + '/api/videos');
+                const data = await resp.json();
                 
-                const list = document.getElementById('videosList');
-                
-                if (!data.videos || data.videos.length === 0) {
-                    list.innerHTML = '<p class="text-gray text-center text-sm">Nenhum vídeo baixado ainda</p>';
+                if (!data.videos || !data.videos.length) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-8">Nenhum vídeo no servidor</p>';
                     return;
                 }
-                
+
                 list.innerHTML = data.videos.map(v => `
-                    <div class="video-item">
-                        <span>${v.filename}</span>
-                        <button onclick="window.open('${API}/video/${v.filename}', '_blank')" 
-                                class="btn btn-success" style="width: auto; padding: 8px 16px; font-size: 12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#0A0A0B;border-radius:12px;margin-bottom:8px;">
+                        <span style="font-size:14px;flex:1;word-break:break-all;">${v.filename}</span>
+                        <button onclick="window.open('${API_BASE}/api/video/${v.filename}','_blank')" 
+                                style="padding:8px 16px;background:#10B981;color:#fff;border:none;border-radius:8px;font-size:12px;cursor:pointer;margin-left:8px;">
                             Baixar
                         </button>
                     </div>
                 `).join('');
-                
-            } catch (error) {
-                document.getElementById('videosList').innerHTML = 
-                    '<p class="text-gray text-center text-sm">Erro ao carregar. Servidor offline?</p>';
+            } catch(e) {
+                list.innerHTML = '<p class="text-red-400 text-center py-8">❌ Servidor offline</p>';
             }
         }
 
-        loadVideos();
+        // ===== TEMPLATE =====
+        function updateTemplate() {
+            document.getElementById('tplUsername').textContent = document.getElementById('cfgUsername').value || '@Perfil';
+            document.getElementById('tplSubtitle').textContent = document.getElementById('cfgSubtitle').value || 'Canal';
+            document.getElementById('tplTitle').textContent = document.getElementById('cfgTitle').value || 'Título';
+        }
+
+        function saveTemplate() {
+            const template = {
+                name: 'Template ' + new Date().toLocaleDateString(),
+                username: document.getElementById('cfgUsername').value,
+                subtitle: document.getElementById('cfgSubtitle').value,
+                title: document.getElementById('cfgTitle').value,
+                bgColor: document.getElementById('cfgBgColor').value
+            };
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            templates.unshift({...template, id: Date.now()});
+            localStorage.setItem('cf_templates', JSON.stringify(templates.slice(0, 20)));
+            loadTemplates();
+            alert('✅ Template salvo!');
+        }
+
+        function loadTemplates() {
+            const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+            const div = document.getElementById('savedTemplates');
+            if (!templates.length) {
+                div.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhum template salvo</p>';
+                return;
+            }
+            div.innerHTML = templates.map(t => `
+                <div style="padding:12px;background:#0A0A0B;border-radius:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <p style="font-size:14px;color:#fff;">${t.username}</p>
+                        <p style="font-size:12px;color:#9CA3AF;">${t.title}</p>
+                    </div>
+                    <button onclick="deleteTemplate('${t.id}')" style="color:#EF4444;background:none;border:none;font-size:12px;cursor:pointer;">🗑</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteTemplate(id) {
+            if (confirm('Excluir?')) {
+                const templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
+                localStorage.setItem('cf_templates', JSON.stringify(templates.filter(t => t.id != id)));
+                loadTemplates();
+            }
+        }
+
+        // ===== START =====
+        init();
     </script>
 </body>
 </html>
