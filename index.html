@@ -74,7 +74,6 @@
             animation: shimmer 1.5s infinite;
         }
         
-        /* Cards e elementos */
         .card {
             background: #121214;
             border: 1px solid #1F1F23;
@@ -111,7 +110,6 @@
         
         .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 8px; width: auto; }
         
-        /* Inputs */
         input[type="text"], input[type="color"], textarea {
             width: 100%;
             padding: 12px;
@@ -127,7 +125,6 @@
             border-color: #8B5CF6;
         }
         
-        /* Template */
         .corte-template {
             width: 100%;
             max-width: 380px;
@@ -155,7 +152,6 @@
             object-fit: cover;
         }
         
-        /* Video Card */
         .video-card {
             cursor: pointer;
             transition: all 0.2s;
@@ -190,7 +186,6 @@
             border-color: #8B5CF6;
         }
         
-        /* Template Card */
         .template-card {
             cursor: pointer;
             transition: all 0.2s;
@@ -204,7 +199,6 @@
             background: rgba(139, 92, 246, 0.1) !important;
         }
         
-        /* Bottom Navigation Mobile */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -238,7 +232,6 @@
             height: 22px;
         }
         
-        /* Progress */
         .progress-bar {
             width: 100%;
             height: 6px;
@@ -253,7 +246,6 @@
             transition: width 0.3s ease;
         }
         
-        /* Badge */
         .badge {
             display: inline-flex;
             align-items: center;
@@ -265,7 +257,6 @@
         .badge-primary { background: rgba(139, 92, 246, 0.2); color: #A78BFA; }
         .badge-success { background: rgba(16, 185, 129, 0.2); color: #10B981; }
         
-        /* Responsivo */
         @media (min-width: 768px) {
             .bottom-nav { display: none; }
             .desktop-sidebar { display: flex; }
@@ -283,7 +274,6 @@
 
 <div id="app" class="min-h-screen flex flex-col md:flex-row">
     
-    <!-- Sidebar Desktop -->
     <aside class="w-60 h-screen bg-dark-card border-r border-dark-border fixed left-0 top-0 z-30 flex-col hidden desktop-only desktop-sidebar">
         <div class="p-5 border-b border-dark-border">
             <h1 class="text-xl font-bold"><span class="text-primary">Clip</span><span class="text-white">Forge</span></h1>
@@ -302,21 +292,19 @@
         </nav>
         <div class="p-4 border-t border-dark-border">
             <div class="flex items-center gap-2 text-xs text-gray-500">
-                <span class="w-2 h-2 rounded-full bg-green-500"></span> v2.0
+                <span class="w-2 h-2 rounded-full bg-green-500"></span> v3.0
             </div>
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 md:ml-60 p-4 md:p-6 main-mobile">
         
-        <!-- Header Mobile -->
         <div class="flex items-center justify-between mb-4 desktop-only:hidden">
             <h1 class="text-xl font-bold"><span class="text-primary">Clip</span><span class="text-white">Forge</span></h1>
-            <span class="badge badge-primary text-xs">v2.0</span>
+            <span class="badge badge-primary text-xs">v3.0</span>
         </div>
 
-        <!-- ==================== VIEW: MEUS VÍDEOS ==================== -->
+        <!-- VIEW: MEUS VÍDEOS -->
         <div id="view-videos" class="view-section animate-fade-in">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
                 <div>
@@ -337,7 +325,6 @@
                 </div>
             </div>
 
-            <!-- Barra de info -->
             <div class="flex items-center justify-between mb-4 p-3 bg-dark-card rounded-xl border border-dark-border">
                 <span class="text-sm text-gray-400">
                     <span id="total-videos-count" class="text-white font-semibold">0</span> vídeos carregados
@@ -347,7 +334,6 @@
                 </span>
             </div>
 
-            <!-- Grid de vídeos -->
             <div id="videos-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 <div class="col-span-full text-center py-16">
                     <div class="w-20 h-20 bg-dark-card rounded-full flex items-center justify-center mx-auto mb-4 border border-dark-border">
@@ -362,7 +348,7 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW: TEMPLATES ==================== -->
+        <!-- VIEW: TEMPLATES -->
         <div id="view-templates" class="view-section hidden">
             <div class="mb-4">
                 <h2 class="text-2xl font-bold text-white">Templates</h2>
@@ -370,7 +356,6 @@
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                <!-- Preview -->
                 <div class="card">
                     <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                         <i data-lucide="eye" class="w-4 h-4 text-primary"></i> Preview
@@ -397,7 +382,6 @@
                     </div>
                 </div>
 
-                <!-- Configuração -->
                 <div class="card">
                     <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                         <i data-lucide="settings" class="w-4 h-4 text-primary"></i> Configurar
@@ -434,7 +418,6 @@
                 </div>
             </div>
 
-            <!-- Templates Salvos -->
             <div class="card">
                 <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                     <i data-lucide="folder-open" class="w-4 h-4 text-yellow-400"></i> Templates Salvos
@@ -445,14 +428,13 @@
             </div>
         </div>
 
-        <!-- ==================== VIEW: RENDERIZAR ==================== -->
+        <!-- VIEW: RENDERIZAR -->
         <div id="view-render" class="view-section hidden">
             <div class="mb-4">
                 <h2 class="text-2xl font-bold text-white">Renderizar Vídeos</h2>
                 <p class="text-sm text-gray-400">Aplique templates aos vídeos selecionados</p>
             </div>
 
-            <!-- Passo 1: Template -->
             <div class="card">
                 <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                     <span class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">1</span>
@@ -463,7 +445,6 @@
                 </div>
             </div>
 
-            <!-- Passo 2: Vídeos -->
             <div class="card">
                 <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
                     <span class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">2</span>
@@ -474,12 +455,10 @@
                 </div>
             </div>
 
-            <!-- Botão Renderizar -->
             <button onclick="startRenderProcess()" id="start-render-btn" class="btn btn-primary mt-4 text-lg py-4" disabled>
                 <i data-lucide="clapperboard" class="w-6 h-6"></i> Renderizar Vídeos
             </button>
 
-            <!-- Preview da renderização -->
             <div id="render-preview-container" class="hidden mt-4">
                 <div class="card">
                     <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
@@ -505,13 +484,12 @@
                 </div>
             </div>
 
-            <!-- Progresso -->
             <div id="render-progress-container" class="hidden mt-4">
                 <div class="card">
                     <h3 class="text-sm font-semibold mb-3">Processando...</h3>
                     <div id="render-progress-list" class="space-y-3"></div>
                     <button onclick="downloadAllRendered()" id="download-all-btn" class="btn btn-success mt-4 hidden">
-                        <i data-lucide="download" class="w-5 h-5"></i> Baixar Todos os Vídeos
+                        <i data-lucide="download" class="w-5 h-5"></i> Baixar Todos os Vídeos Renderizados
                     </button>
                 </div>
             </div>
@@ -519,7 +497,6 @@
 
     </main>
 
-    <!-- Bottom Navigation Mobile -->
     <nav class="bottom-nav mobile-only">
         <button onclick="switchTab('videos')" id="nav-mobile-videos" class="active">
             <i data-lucide="video"></i>
@@ -545,23 +522,13 @@
 
     // ===== INICIALIZAÇÃO =====
     function init() {
-        // Carregar vídeos salvos
         loadUserVideos();
-        
-        // Carregar seleções
         selectedVideoIds = JSON.parse(localStorage.getItem('cf_selected_videos') || '[]');
         selectedTemplateId = localStorage.getItem('cf_selected_template') || null;
-        
-        // Carregar templates
         loadTemplatesList();
-        
-        // Atualizar preview
         updatePreviewLive();
         updateAllNavButtons('videos');
-        
-        console.log('✅ ClipForge iniciado!');
-        console.log('📁 Vídeos carregados:', userVideos.length);
-        console.log('🎨 Templates:', JSON.parse(localStorage.getItem('cf_templates') || '[]').length);
+        console.log('✅ ClipForge v3.0 iniciado! Renderização com Canvas ativada.');
     }
 
     // ===== NAVEGAÇÃO =====
@@ -569,16 +536,10 @@
         document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
         const view = document.getElementById('view-' + tab);
         if (view) view.classList.remove('hidden');
-        
         updateAllNavButtons(tab);
-        
         if (tab === 'videos') loadUserVideos();
-        if (tab === 'templates') {
-            loadTemplatesList();
-            updatePreviewLive();
-        }
+        if (tab === 'templates') { loadTemplatesList(); updatePreviewLive(); }
         if (tab === 'render') loadRenderPage();
-        
         lucide.createIcons();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -587,10 +548,7 @@
         ['videos', 'templates', 'render'].forEach(tab => {
             const mobileBtn = document.getElementById('nav-mobile-' + tab);
             const desktopBtn = document.getElementById('nav-desktop-' + tab);
-            
-            if (mobileBtn) {
-                mobileBtn.classList.toggle('active', tab === activeTab);
-            }
+            if (mobileBtn) mobileBtn.classList.toggle('active', tab === activeTab);
             if (desktopBtn) {
                 if (tab === activeTab) {
                     desktopBtn.classList.add('bg-primary/10', 'text-primary', 'border', 'border-primary/20');
@@ -607,13 +565,11 @@
     function addVideosFromDevice(event) {
         const files = Array.from(event.target.files);
         if (!files.length) return;
-        
         files.forEach(file => {
             if (!file.type.startsWith('video/')) {
                 alert('⚠️ ' + file.name + ' não é um vídeo!');
                 return;
             }
-            
             const videoUrl = URL.createObjectURL(file);
             userVideos.push({
                 id: 'vid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
@@ -624,34 +580,21 @@
                 date: new Date().toISOString()
             });
         });
-        
         saveVideosMetadata();
         loadUserVideos();
         event.target.value = '';
-        
-        console.log('✅ Vídeos adicionados! Total:', userVideos.length);
     }
 
     function saveVideosMetadata() {
-        const meta = userVideos.map(v => ({ 
-            id: v.id, 
-            name: v.name, 
-            size: v.size, 
-            date: v.date 
-        }));
+        const meta = userVideos.map(v => ({ id: v.id, name: v.name, size: v.size, date: v.date }));
         localStorage.setItem('cf_videos_meta', JSON.stringify(meta));
     }
 
     function loadUserVideos() {
         const grid = document.getElementById('videos-grid');
         if (!grid) return;
-        
-        const totalCount = document.getElementById('total-videos-count');
-        const selectedCount = document.getElementById('selected-videos-count');
-        
-        if (totalCount) totalCount.textContent = userVideos.length;
-        if (selectedCount) selectedCount.textContent = selectedVideoIds.length;
-        
+        document.getElementById('total-videos-count').textContent = userVideos.length;
+        document.getElementById('selected-videos-count').textContent = selectedVideoIds.length;
         if (!userVideos.length) {
             grid.innerHTML = `
                 <div class="col-span-full text-center py-16">
@@ -680,7 +623,6 @@
                     </div>`;
             }).join('');
         }
-        
         lucide.createIcons();
     }
 
@@ -700,11 +642,8 @@
                 if (overlay) overlay.textContent = '✓';
             }
         }
-        
         localStorage.setItem('cf_selected_videos', JSON.stringify(selectedVideoIds));
-        
-        const selectedCount = document.getElementById('selected-videos-count');
-        if (selectedCount) selectedCount.textContent = selectedVideoIds.length;
+        document.getElementById('selected-videos-count').textContent = selectedVideoIds.length;
     }
 
     function selectAllVideos() {
@@ -725,17 +664,13 @@
         return mb >= 1 ? mb.toFixed(1) + ' MB' : (bytes / 1024).toFixed(0) + ' KB';
     }
 
-    // ===== TEMPLATES (CORRIGIDO) =====
+    // ===== TEMPLATES =====
     function updateProfilePic(event) {
         const file = event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
-            const img = document.getElementById('corte-profile-pic');
-            if (img) {
-                img.src = e.target.result;
-                console.log('✅ Foto de perfil atualizada');
-            }
+            document.getElementById('corte-profile-pic').src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -744,14 +679,9 @@
         const username = document.getElementById('config-username');
         const subtitle = document.getElementById('config-subtitle');
         const title = document.getElementById('config-title');
-        
-        const previewUsername = document.getElementById('corte-username');
-        const previewSubtitle = document.getElementById('corte-subtitle');
-        const previewTitle = document.getElementById('corte-title');
-        
-        if (previewUsername && username) previewUsername.textContent = username.value || '@SeuPerfil';
-        if (previewSubtitle && subtitle) previewSubtitle.textContent = subtitle.value || 'Canal de Cortes';
-        if (previewTitle && title) previewTitle.textContent = title.value || 'Título do Vídeo 🔥';
+        if (username) document.getElementById('corte-username').textContent = username.value || '@SeuPerfil';
+        if (subtitle) document.getElementById('corte-subtitle').textContent = subtitle.value || 'Canal de Cortes';
+        if (title) document.getElementById('corte-title').textContent = title.value || 'Título do Vídeo 🔥';
     }
 
     function saveTemplate() {
@@ -778,51 +708,27 @@
             date: new Date().toISOString()
         };
         
-        console.log('💾 Salvando template:', template);
-        
         let templates = [];
-        try {
-            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-        } catch(e) {
-            templates = [];
-        }
-        
+        try { templates = JSON.parse(localStorage.getItem('cf_templates') || '[]'); } catch(e) { templates = []; }
         templates.unshift(template);
         if (templates.length > 50) templates = templates.slice(0, 50);
-        
         localStorage.setItem('cf_templates', JSON.stringify(templates));
-        
-        console.log('✅ Template salvo! Total:', templates.length);
-        
         loadTemplatesList();
         alert('✅ Template "' + template.name + '" salvo com sucesso!');
     }
 
     function loadTemplatesList() {
         const grid = document.getElementById('saved-templates-grid');
-        if (!grid) {
-            console.log('⚠️ Grid de templates não encontrado');
-            return;
-        }
-        
+        if (!grid) return;
         let templates = [];
-        try {
-            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-        } catch(e) {
-            templates = [];
-        }
-        
-        console.log('📋 Carregando templates:', templates.length);
-        
+        try { templates = JSON.parse(localStorage.getItem('cf_templates') || '[]'); } catch(e) { templates = []; }
         if (!templates.length) {
             grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-6 text-sm">Nenhum template salvo ainda</p>';
         } else {
             grid.innerHTML = templates.map(t => `
                 <div class="template-card p-3">
                     <div class="flex items-center gap-2 mb-2">
-                        <img src="${t.profilePic || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'}" 
-                             class="w-8 h-8 rounded-full object-cover bg-gray-700 flex-shrink-0" 
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'">
+                        <img src="${t.profilePic || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'}" class="w-8 h-8 rounded-full object-cover bg-gray-700 flex-shrink-0" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2216%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'">
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-white truncate">${t.name || 'Sem nome'}</p>
                             <p class="text-xs text-gray-400">${t.username || '@perfil'}</p>
@@ -836,7 +742,6 @@
                 </div>
             `).join('');
         }
-        
         const renderTemplateList = document.getElementById('render-template-list');
         if (renderTemplateList && !document.getElementById('view-render').classList.contains('hidden')) {
             loadRenderTemplates();
@@ -845,34 +750,15 @@
 
     function editTemplate(id) {
         let templates = [];
-        try {
-            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-        } catch(e) {
-            templates = [];
-        }
-        
+        try { templates = JSON.parse(localStorage.getItem('cf_templates') || '[]'); } catch(e) { templates = []; }
         const t = templates.find(t => t.id == id);
-        if (!t) {
-            alert('❌ Template não encontrado!');
-            return;
-        }
-        
-        console.log('✏️ Editando template:', t.name);
-        
-        const nameInput = document.getElementById('template-name');
-        const usernameInput = document.getElementById('config-username');
-        const subtitleInput = document.getElementById('config-subtitle');
-        const titleInput = document.getElementById('config-title');
-        const profilePic = document.getElementById('corte-profile-pic');
-        const headerBg = document.getElementById('corte-header-bg');
-        
-        if (nameInput) nameInput.value = t.name || '';
-        if (usernameInput) usernameInput.value = t.username || '';
-        if (subtitleInput) subtitleInput.value = t.subtitle || '';
-        if (titleInput) titleInput.value = t.title || '';
-        if (profilePic && t.profilePic) profilePic.src = t.profilePic;
-        if (headerBg && t.headerBg) headerBg.style.background = t.headerBg;
-        
+        if (!t) { alert('❌ Template não encontrado!'); return; }
+        document.getElementById('template-name').value = t.name || '';
+        document.getElementById('config-username').value = t.username || '';
+        document.getElementById('config-subtitle').value = t.subtitle || '';
+        document.getElementById('config-title').value = t.title || '';
+        if (t.profilePic) document.getElementById('corte-profile-pic').src = t.profilePic;
+        if (t.headerBg) document.getElementById('corte-header-bg').style.background = t.headerBg;
         updatePreviewLive();
         switchTab('templates');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -880,33 +766,18 @@
 
     function deleteTemplate(id) {
         if (!confirm('Tem certeza que deseja excluir este template?')) return;
-        
         let templates = [];
-        try {
-            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-        } catch(e) {
-            templates = [];
-        }
-        
+        try { templates = JSON.parse(localStorage.getItem('cf_templates') || '[]'); } catch(e) { templates = []; }
         templates = templates.filter(t => t.id != id);
         localStorage.setItem('cf_templates', JSON.stringify(templates));
-        
-        console.log('🗑 Template excluído. Restantes:', templates.length);
-        
         loadTemplatesList();
     }
 
     function loadRenderTemplates() {
         const templateList = document.getElementById('render-template-list');
         if (!templateList) return;
-        
         let templates = [];
-        try {
-            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-        } catch(e) {
-            templates = [];
-        }
-        
+        try { templates = JSON.parse(localStorage.getItem('cf_templates') || '[]'); } catch(e) { templates = []; }
         if (!templates.length) {
             templateList.innerHTML = '<p class="text-gray-500 text-center py-4 text-sm">Nenhum template salvo. Crie um template primeiro!</p>';
         } else {
@@ -914,8 +785,7 @@
                 <div class="template-card p-3 cursor-pointer ${selectedTemplateId == t.id ? 'selected' : ''}"
                      onclick="selectTemplateForRender(${t.id}, this)">
                     <div class="flex items-center gap-2 mb-1">
-                        <img src="${t.profilePic || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2212%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'}" 
-                             class="w-6 h-6 rounded-full object-cover">
+                        <img src="${t.profilePic || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2224%22 height=%2224%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2212%22 fill=%22%238B5CF6%22/%3E%3C/svg%3E'}" class="w-6 h-6 rounded-full object-cover">
                         <p class="text-sm font-semibold text-white">${t.name}</p>
                     </div>
                     <p class="text-xs text-gray-400">${t.username} • ${t.title}</p>
@@ -942,11 +812,9 @@
     function updateRenderVideoList() {
         const list = document.getElementById('render-video-list');
         if (!list) return;
-        
         const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
-        
         if (!selectedVideos.length) {
-            list.innerHTML = '<p class="text-gray-500 text-center py-4 text-sm">Nenhum vídeo selecionado. Vá em "Meus Vídeos" e selecione.</p>';
+            list.innerHTML = '<p class="text-gray-500 text-center py-4 text-sm">Nenhum vídeo selecionado</p>';
         } else {
             list.innerHTML = selectedVideos.map((v, i) => `
                 <div class="flex items-center justify-between p-2 bg-dark rounded-lg text-sm">
@@ -962,74 +830,47 @@
 
     function updateRenderButton() {
         const btn = document.getElementById('start-render-btn');
-        if (btn) {
-            const canRender = selectedVideoIds.length > 0 && selectedTemplateId !== null;
-            btn.disabled = !canRender;
-        }
+        if (btn) btn.disabled = !(selectedVideoIds.length > 0 && selectedTemplateId !== null);
     }
 
+    // ===== RENDERIZAÇÃO COM CANVAS =====
     function startRenderProcess() {
         const selectedVideos = userVideos.filter(v => selectedVideoIds.includes(v.id));
-        
         let templates = [];
-        try {
-            templates = JSON.parse(localStorage.getItem('cf_templates') || '[]');
-        } catch(e) {
-            templates = [];
-        }
-        
+        try { templates = JSON.parse(localStorage.getItem('cf_templates') || '[]'); } catch(e) { templates = []; }
         const template = templates.find(t => t.id == selectedTemplateId);
         
-        if (!selectedVideos.length) {
-            alert('❌ Selecione pelo menos um vídeo!');
-            return;
-        }
+        if (!selectedVideos.length) { alert('❌ Selecione pelo menos um vídeo!'); return; }
+        if (!template) { alert('❌ Selecione um template!'); return; }
         
-        if (!template) {
-            alert('❌ Selecione um template!');
-            return;
-        }
-        
-        console.log('🎬 Iniciando renderização:', selectedVideos.length, 'vídeos com template:', template.name);
-        
+        console.log('🎬 Iniciando renderização com Canvas:', template.name);
         showRenderPreview(selectedVideos[0], template);
-        processAllVideos(selectedVideos, template);
+        processAllVideosWithTemplate(selectedVideos, template);
     }
 
     function showRenderPreview(video, template) {
         const container = document.getElementById('render-preview-container');
         if (!container) return;
-        
         container.classList.remove('hidden');
-        
-        const header = document.getElementById('render-preview-header');
-        const pic = document.getElementById('render-preview-pic');
-        const username = document.getElementById('render-preview-username');
-        const subtitle = document.getElementById('render-preview-subtitle');
-        const title = document.getElementById('render-preview-title');
-        const videoEl = document.getElementById('render-preview-video');
-        
-        if (header) header.style.background = template.headerBg || '#FFFFFF';
-        if (pic) pic.src = template.profilePic || '';
-        if (username) username.textContent = template.username || '@Perfil';
-        if (subtitle) subtitle.textContent = template.subtitle || '';
-        if (title) title.textContent = template.title || '';
-        
-        if (videoEl && video.url) {
-            videoEl.src = video.url;
-            videoEl.play().catch(() => {});
+        document.getElementById('render-preview-header').style.background = template.headerBg || '#FFFFFF';
+        document.getElementById('render-preview-pic').src = template.profilePic || '';
+        document.getElementById('render-preview-username').textContent = template.username || '@Perfil';
+        document.getElementById('render-preview-subtitle').textContent = template.subtitle || '';
+        document.getElementById('render-preview-title').textContent = template.title || '';
+        const previewVideo = document.getElementById('render-preview-video');
+        if (previewVideo && video.url) {
+            previewVideo.src = video.url;
+            previewVideo.play().catch(() => {});
         }
-        
         container.scrollIntoView({ behavior: 'smooth' });
     }
 
-    async function processAllVideos(videos, template) {
+    async function processAllVideosWithTemplate(videos, template) {
         const container = document.getElementById('render-progress-container');
         const list = document.getElementById('render-progress-list');
         const downloadBtn = document.getElementById('download-all-btn');
         
         if (!container || !list) return;
-        
         container.classList.remove('hidden');
         if (downloadBtn) downloadBtn.classList.add('hidden');
         renderedVideos = [];
@@ -1041,59 +882,224 @@
                     <span class="text-sm text-primary ml-2 render-status">0%</span>
                 </div>
                 <div class="progress-bar"><div class="progress-fill render-bar" style="width:0%"></div></div>
+                <p class="text-xs text-gray-500 mt-1 render-detail">Preparando...</p>
             </div>
         `).join('');
         
         container.scrollIntoView({ behavior: 'smooth' });
         
         for (let i = 0; i < videos.length; i++) {
-            await simulateRender(i, videos[i]);
-            renderedVideos.push({
-                name: videos[i].name.replace(/\.[^/.]+$/, "") + '_' + template.name.replace(/\s+/g, '_') + '.mp4',
-                url: videos[i].url,
-                template: template.name
-            });
+            const renderedBlob = await renderVideoWithTemplate(videos[i], template, i);
+            if (renderedBlob) {
+                renderedVideos.push({
+                    name: videos[i].name.replace(/\.[^/.]+$/, "") + '_' + template.name.replace(/\s+/g, '_') + '.webm',
+                    blob: renderedBlob,
+                    url: URL.createObjectURL(renderedBlob)
+                });
+            }
         }
         
         if (downloadBtn) downloadBtn.classList.remove('hidden');
         container.scrollIntoView({ behavior: 'smooth' });
         
         const renders = JSON.parse(localStorage.getItem('cf_renders') || '[]');
-        renders.unshift({
-            id: Date.now(),
-            count: videos.length,
-            templateName: template.name,
-            date: new Date().toISOString()
-        });
+        renders.unshift({ id: Date.now(), count: videos.length, templateName: template.name, date: new Date().toISOString() });
         localStorage.setItem('cf_renders', JSON.stringify(renders.slice(0, 100)));
+        
+        console.log('✅ Renderização concluída!', renderedVideos.length, 'vídeos processados');
     }
 
-    async function simulateRender(index, video) {
+    async function renderVideoWithTemplate(video, template, index) {
         const el = document.getElementById('render-item-' + index);
-        if (!el) return;
+        const bar = el ? el.querySelector('.render-bar') : null;
+        const status = el ? el.querySelector('.render-status') : null;
+        const detail = el ? el.querySelector('.render-detail') : null;
         
-        const bar = el.querySelector('.render-bar');
-        const status = el.querySelector('.render-status');
-        
-        for (let p = 0; p <= 100; p += Math.floor(Math.random() * 8) + 3) {
-            await sleep(60 + Math.random() * 100);
-            const prog = Math.min(p, 100);
-            if (bar) bar.style.width = prog + '%';
-            if (status) status.textContent = prog + '%';
+        function updateProgress(percent, text) {
+            if (bar) bar.style.width = percent + '%';
+            if (status) status.textContent = percent + '%';
+            if (detail) detail.textContent = text;
         }
         
-        if (status) {
-            status.textContent = '✓ Concluído';
-            status.classList.remove('text-primary');
-            status.classList.add('text-success');
+        updateProgress(5, 'Carregando vídeo...');
+        await sleep(300);
+        
+        let profileImage = null;
+        if (template.profilePic && template.profilePic.startsWith('data:')) {
+            updateProgress(20, 'Carregando foto de perfil...');
+            profileImage = await loadImage(template.profilePic);
+            await sleep(200);
+        }
+        
+        updateProgress(30, 'Preparando renderização...');
+        await sleep(300);
+        
+        try {
+            const blob = await createRenderedVideo(video, template, profileImage, (percent) => {
+                const p = 30 + (percent * 0.6);
+                updateProgress(Math.round(p), 'Renderizando frame ' + Math.round(percent * 100) + '%');
+            });
+            
+            updateProgress(95, 'Finalizando...');
+            await sleep(300);
+            updateProgress(100, '✓ Concluído');
+            if (status) { status.classList.remove('text-primary'); status.classList.add('text-success'); }
+            return blob;
+        } catch (error) {
+            console.error('Erro na renderização:', error);
+            updateProgress(100, '⚠️ Usando original');
+            if (status) { status.classList.remove('text-primary'); status.classList.add('text-warning'); }
+            const response = await fetch(video.url);
+            return await response.blob();
         }
     }
 
+    async function createRenderedVideo(video, template, profileImage, onProgress) {
+        const videoEl = document.createElement('video');
+        videoEl.src = video.url;
+        videoEl.muted = true;
+        videoEl.playsInline = true;
+        videoEl.crossOrigin = 'anonymous';
+        
+        await new Promise((resolve) => {
+            videoEl.addEventListener('loadedmetadata', resolve, { once: true });
+            videoEl.load();
+        });
+        
+        const duration = Math.min(videoEl.duration || 3, 15);
+        const fps = 20;
+        const totalFrames = Math.floor(duration * fps);
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const outputWidth = 720;
+        const outputHeight = 1280;
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
+        
+        const stream = canvas.captureStream(fps);
+        const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+        const mediaRecorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 4000000 });
+        
+        const chunks = [];
+        mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+        
+        const renderPromise = new Promise((resolve) => {
+            mediaRecorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+        });
+        
+        const headerHeight = Math.round(outputHeight * 0.18);
+        
+        mediaRecorder.start();
+        
+        let currentFrame = 0;
+        const frameInterval = 1000 / fps;
+        
+        async function renderFrame() {
+            if (currentFrame >= totalFrames) {
+                mediaRecorder.stop();
+                return;
+            }
+            
+            const time = currentFrame / fps;
+            videoEl.currentTime = time;
+            
+            await new Promise((resolve) => {
+                const onSeeked = () => { videoEl.removeEventListener('seeked', onSeeked); resolve(); };
+                videoEl.addEventListener('seeked', onSeeked);
+            });
+            
+            ctx.clearRect(0, 0, outputWidth, outputHeight);
+            
+            // Fundo do header
+            ctx.fillStyle = template.headerBg || '#FFFFFF';
+            ctx.fillRect(0, 0, outputWidth, headerHeight);
+            
+            // Foto de perfil
+            if (profileImage) {
+                const picSize = Math.round(outputWidth * 0.12);
+                const picX = (outputWidth / 2) - (picSize / 2);
+                const picY = Math.round(headerHeight * 0.18);
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(picX + picSize/2, picY + picSize/2, picSize/2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(profileImage, picX, picY, picSize, picSize);
+                ctx.restore();
+                ctx.strokeStyle = '#8B5CF6';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(picX + picSize/2, picY + picSize/2, picSize/2, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Nome e subtítulo
+            ctx.fillStyle = '#1F2937';
+            ctx.font = `bold ${Math.round(outputWidth * 0.04)}px -apple-system, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(template.username || '@perfil', outputWidth / 2, headerHeight * 0.55);
+            
+            ctx.fillStyle = '#6B7280';
+            ctx.font = `${Math.round(outputWidth * 0.028)}px -apple-system, sans-serif`;
+            ctx.fillText(template.subtitle || '', outputWidth / 2, headerHeight * 0.65);
+            
+            // Título
+            ctx.fillStyle = '#1F2937';
+            ctx.font = `bold ${Math.round(outputWidth * 0.045)}px -apple-system, sans-serif`;
+            ctx.fillText(template.title || '', outputWidth / 2, headerHeight * 0.85);
+            
+            // Vídeo
+            const videoY = headerHeight;
+            const videoHeight = outputHeight - headerHeight;
+            const videoAspect = videoEl.videoWidth / videoEl.videoHeight;
+            const areaAspect = outputWidth / videoHeight;
+            
+            let drawWidth, drawHeight, drawX, drawY;
+            if (videoAspect > areaAspect) {
+                drawHeight = videoHeight;
+                drawWidth = videoHeight * videoAspect;
+                drawX = -(drawWidth - outputWidth) / 2;
+                drawY = videoY;
+            } else {
+                drawWidth = outputWidth;
+                drawHeight = outputWidth / videoAspect;
+                drawX = 0;
+                drawY = videoY + (videoHeight - drawHeight) / 2;
+            }
+            
+            ctx.drawImage(videoEl, drawX, drawY, drawWidth, drawHeight);
+            
+            currentFrame++;
+            if (onProgress && currentFrame % 3 === 0) {
+                onProgress(currentFrame / totalFrames);
+            }
+            
+            setTimeout(renderFrame, frameInterval);
+        }
+        
+        renderFrame();
+        return await renderPromise;
+    }
+
+    function loadImage(src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.crossOrigin = 'anonymous';
+            img.src = src;
+        });
+    }
+
+    // ===== DOWNLOAD =====
     function downloadAllRendered() {
         if (!renderedVideos.length) {
-            alert('Nenhum vídeo para baixar!');
+            alert('Nenhum vídeo renderizado para baixar!');
             return;
         }
+        
+        console.log('📥 Baixando', renderedVideos.length, 'vídeos com template aplicado');
         
         renderedVideos.forEach((v, i) => {
             setTimeout(() => {
@@ -1103,15 +1109,14 @@
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-            }, i * 300);
+                console.log('✅ Download:', v.name);
+            }, i * 500);
         });
         
-        alert('✅ Baixando ' + renderedVideos.length + ' vídeos renderizados!');
+        alert('✅ Baixando ' + renderedVideos.length + ' vídeos com template aplicado!\n\nFormato: WebM');
     }
 
-    function sleep(ms) { 
-        return new Promise(r => setTimeout(r, ms)); 
-    }
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     // ===== INICIAR =====
     if (document.readyState === 'loading') {
@@ -1119,7 +1124,6 @@
     } else {
         init();
     }
-    
     lucide.createIcons();
 </script>
 </body>
